@@ -10,27 +10,6 @@ public class Role{
       */
    }
    
-   public Role(int rank){
-      /*
-      rankRequired = rank;
-      isTaken = false;
-      */
-   }
-   
-   public Role(boolean taken){
-      /*
-      isTaken = taken;
-      rankRequired = 1;
-      */
-   }
-   
-   public Role(int rank, boolean taken){
-      /*
-      rankRequired = rank;
-      isTaken = taken;
-      */   
-   }
-   
    public int getRequiredRank(){
       //return rankRequired;
       return 1; //temp
