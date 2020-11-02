@@ -1,4 +1,4 @@
-public class CastingOffice{
+public class CastingOffice extends Room{
    private int[] prices_money; //rank prices in money
    private int[] prices_credit; //rank prices in credit
    
@@ -16,10 +16,10 @@ public class CastingOffice{
    */
    public int[] getRankMoneyPrices(){
       int[] temp = new int[prices_money.length];
+      //put shallow copy of prices_money into temp
       System.arraycopy(prices_money, 0, temp, 0, temp.length);
       return temp;
       
-      //return new int[1]; //temp
    }
    
    /*
@@ -31,9 +31,9 @@ public class CastingOffice{
    */
    public int[] getRankCreditPrices(){
       int[] temp = new int[prices_credit.length];
+      //put shallow copy of prices_credits into temp
       System.arraycopy(prices_credit, 0, temp, 0, temp.length);
       return temp;
-      
-      //return new int[1]; //temp
+
    }
 }

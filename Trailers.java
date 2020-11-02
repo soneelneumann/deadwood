@@ -1,13 +1,5 @@
-public class Trailers{
+public class Trailers extends Room{
    
    private String startText;
    
-
-   /*Trailers initializer*/
-
-   /*Trailer initializer*/
-
-   public Trailers(){
-      startText = ""; //temp
-   }
 }
