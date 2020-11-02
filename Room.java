@@ -1,24 +1,58 @@
 import java.util.ArrayList;
 public class Room{
    
+   public String roomName;
+   
    private ArrayList<Player> occupants;
    
    private ArrayList<Room> neighbors;
    
    /* Room initializer */
    public Room(){
-
-      occupants = new ArrayList<>();
-      neighbors = new ArrayList<Room>();
-
-      occupants =  new ArrayList<>(); 
       
-      /*
-      goUp = null; //door going up
-      goDown = null; //door going down
-      goLeft = null; //door going left
-      goRight = null; //door going right
-      */
+      occupants = new ArrayList<Player>();
+      neighbors = new ArrayList<Room>();
+      
+   }
+   
+   /*room initializer, with roomName*/
+   public Room(String roomName){
+      occupants = new ArrayList<Player>();
+      neighbors = new ArrayList<Room>();
+      this.roomName = roomName;
+   }
+   
+   /*
+      addNeighbor()
+      params: Room r, room we're adding
+      returns: none
+      precond:
+      postcond: room is added as a neighbor
+   */
+   public void addNeighbor(Room r){
+      neighbors.add(r);
+   }
+   
+   /*
+      addOcupant()
+      params: Player p, player we're adding
+      returns: none
+      precond: player is not currently in room
+      postcond: player is added to occupants
+   */
+   public void addOccupant(Player p){
+      occupants.add(p);
+   }
+   
+   /*
+      removeOccupant()
+      params: Player p, player we're removing
+      returns: none
+      precond: player is in this room
+      postcond: player is removed from occupants
+   */
+   public void removeOccupant(Player p){
+      occupants.remove(p);
    }
    
    /* 
@@ -29,25 +63,24 @@ public class Room{
    This method identifies all the players that are in the room
    */
    public ArrayList<Player> getOccupants(){
-      return (ArrayList<Player>)occupants.clone();
-   }
-   
-   public boolean isPlayerHere(Player p){
-      
-      for(Player q : occupants){
-         // if p == q, return true
-      }
-      return false; //not temp, jsut convernient
+      //return shallow copy of occupants
+      return new ArrayList<Player>(occupants); 
    }
    
    /* 
    isPlayerHere()
+   params: Player p, player we are looking for
    Returns: boolean
    Precondtion: the board needs to keep track of the player's position
    Postcondtion: the players position is found
    This method checks where the player's postion is, as in, what room they are in
    */
-   public boolean isPlayerHere(){
-      return false; //temp
+   public boolean isPlayerHere(Player p){
+      if(occupants.contains(p)){
+         return true;
+      }
+      return false; 
    }
+   
+   
 }
