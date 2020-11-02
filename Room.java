@@ -2,26 +2,23 @@ import java.util.ArrayList;
 public class Room{
    
    private ArrayList<Player> occupants;
-   private Room goUp;
-   private Room goDown;
-   private Room goLeft;
-   private Room goRight;
+   
+   private ArrayList<Room> neighbors;
    
    public Room(){
       occupants = new ArrayList<>();
-      
-      goUp = null; //door going up
-      goDown = null; //door going down
-      goLeft = null; //door going left
-      goRight = null; //door going right
+      neighbors = new ArrayList<Room>();
    }
    
    public ArrayList<Player> getOccupants(){
-      //return occupants.clone();
-      return new ArrayList<Player>(); //temp
+      return (ArrayList<Player>)occupants.clone();
    }
    
-   public boolean isPlayerHere(){
-      return false; //temp
+   public boolean isPlayerHere(Player p){
+      
+      for(Player q : occupants){
+         // if p == q, return true
+      }
+      return false; //not temp, jsut convernient
    }
 }

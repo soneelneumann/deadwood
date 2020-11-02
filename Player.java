@@ -105,4 +105,17 @@ public class Player{
       //remove all practice tokens
    }
    
+   /*
+      takeRole()
+      returns: boolean
+      description: player attempts to take a role in a scene
+      precondition: it is this player's turn
+      postcondition: player returns boolean for success(t) or failure(f)
+   */
+   public boolean takeRole(Role r){
+      //try to take a role
+      Moderator m = new Moderator(); //temp
+      return false; //temp
+   }
+   
 }
