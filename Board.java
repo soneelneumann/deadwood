@@ -1,16 +1,28 @@
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class Board{
    
    private ArrayList<Scene> scenes;
    private Trailers trailers;
    private CastingOffice castingOffice;
+   private ArrayList<Room> rooms;
    
    /* Board initializer */
    public Board(){
       scenes = new ArrayList<Scene>();
       trailers = new Trailers();
       castingOffice = new CastingOffice();
+      
+      rooms = new ArrayList<Room>();
+      
+      //copy contents of scenes into rooms
+      Collections.copy(rooms, scenes);
+      
+      //add trailers and casting office to rooms
+      rooms.add(trailers);
+      rooms.add(castingOffice);
+      
    }
    
    /*
@@ -20,9 +32,15 @@ public class Board{
    Postcondition: the board identifies the player and their location.
    This method parses through the rooms and checks to see which room the player is in and returns that room.
    */
-   public Room find(Player player){
+   public Room find(Player p){
       //find which room a given player is in
-      return new Room(); //temp
+      for(Room r: rooms){
+         if(r.isPlayerHere(p)){
+            return r;
+         }
+      }
+      
+      return new Room(); //for compiler
    }
    
    /*
@@ -34,6 +52,12 @@ public class Board{
    */
    public void clearBoard(){
       //clear the board
+      for(Scene s: scenes){
+         //clear all tokens
+         s.removeShotTokens();
+         //clear scene card
+         s.removeSceneCard();
+      }
    }
    
    /*
