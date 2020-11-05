@@ -1,19 +1,21 @@
+import java.util.Scanner;
+
 public class Player{
    
    //name of the Player
-   public String playerName;
+   public int playerNumber;
    
    //number of credits this player has
-   private int credits;
+   private int credits = 0;
    
    //number of dollars this player has
-   private int money;
+   private int money = 0;
    
    //rank of the given player
-   private int rank;
+   private int rank = 1;
    
    //number of practice tokens this player has
-   private int practiceTokens;
+   private int practiceTokens = 0;
    
    //player's current role, null if they are not in a scene role
    private Role currentRole;
@@ -26,16 +28,56 @@ public class Player{
    }
    
    /*Player initializer, given player's name*/
-   public Player(String playerName){
-      //initialize playerName
-      //everything else default
+   public Player(int playerNumber){
+      this.playerNumber = playerNumber;
    }
    
    /*Player initializer, given player's name, their money and their credits*/
-   public Player(String playerName, int money, int credits){
-      //initalize playerName, money, credits
-      //everything else default
+   public Player(int playerNumber, int money, int credits, int rank){
+      this.playerNumber = playerNumber;
+      this.money = money;
+      this.credits = credits;
+      this.rank = rank;
    }
+
+   public void setPlayerNum(int playerNum){
+      this.playerNumber = playerNum;
+   }
+
+   public void setRank(int pRank){
+      this.rank = pRank;
+   }
+
+   public void setMoney(int pMoney){
+      this.money = pMoney;
+   }
+
+   public void setCredits(int pCredits){
+      this.credits = pCredits;
+   }
+
+   public int getCredits(){
+      return this.credits;
+   }
+
+   public int getMoney(){
+      return this.money;
+   }
+
+   public int getRank(){
+      return this.rank;
+   }
+
+   public int getPlayerNumber(){
+      return this.playerNumber;
+   }
+   public void setPracticeTokens(int pTokens){
+      this.practiceTokens = pTokens;
+   }
+   public int getPracticeTokens(){
+      return this.practiceTokens;
+   }
+
    
    /*
       move(Room location)
@@ -55,8 +97,63 @@ public class Player{
       
       attempts to purchase a certain rank, based on int given
    */
+
+   //logically so wrong
    public void purchaseRank(int rank){
-      //purchase a rank
+      String failed = "Purchase failed";
+      if(rank == 2){
+         if((getMoney() >= 4) || (getCredits() >= 5)){ //NEED TO ASK FOR CREDITS OR MONEY, MAYBE 2 SEPARATE METHODS? purhcaseRankCredits and purchaseRankMoney
+            setMoney(getMoney() - 4);
+            setCredits(getCredits() - 5);
+            setRank(rank);
+         }
+         else{
+            System.out.println(failed);
+         }
+      }
+      else if(rank == 3){
+         if((getMoney() >= 10) || (getCredits() >= 10)){
+            setMoney(getMoney() - 10);
+            setCredits(getCredits() - 10);
+            setRank(rank);
+         }
+         else{
+            System.out.println(failed);
+         }
+      }
+      else if(rank == 4){
+         if((getMoney() >= 18) || (getCredits() >= 15)){
+            setMoney(getMoney() - 18);
+            setCredits(getCredits() - 15);
+            setRank(rank);
+         }
+         else{
+            System.out.println(failed);
+         }
+      }
+      else if(rank == 5){
+         if((getMoney() >= 28) || (getCredits() >= 20)){
+            setMoney(getMoney() - 28);
+            setCredits(getCredits() - 20);
+            setRank(rank);
+         }
+         else{
+            System.out.println(failed);
+         }
+      }
+      else if(rank == 6){
+         if((getMoney() >= 40) || (getCredits() >= 25)){
+            setMoney(getMoney() - 40);
+            setCredits(getCredits() - 25);
+            setRank(rank);
+         }
+         else{
+            System.out.println(failed);
+         }
+      }
+      else{
+         System.out.println("Rank isn't offered");
+      }
    }
    
    /*
@@ -80,7 +177,7 @@ public class Player{
       postcondition: practiceTokens increases by 1
    */
    public void addPracticeToken(){
-      //add a practice token
+      setPracticeTokens(getPracticeTokens() +1);
    }
    
    /*
@@ -90,8 +187,13 @@ public class Player{
       precondition: 
       postcondition: player either gets a shot token or is forced to act
    */
-   public void rehearse(){
-         
+   public void rehearse(Scene scene, SceneCard sceneCard){
+         if(getPracticeTokens() == sceneCard.getSceneBudget()){
+            act(scene);
+         }
+         else{
+            addPracticeToken();
+         }
    }
    
    /*
@@ -102,7 +204,7 @@ public class Player{
       postcondition: all practice tokens are removed
    */
    public void removePracticeTokens(){
-      //remove all practice tokens
+      this.practiceTokens = 0;
    }
    
    /*
