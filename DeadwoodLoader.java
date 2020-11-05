@@ -23,23 +23,59 @@ public class DeadwoodLoader{
       getCardData(Document d)
       description: gets data for Scene Cards from d
       returns: ArrayList of Scene Cards for board
-      precond:
-      postcond:
+      precond: Document is not empty
+      postcond: ArrayList with full scene cards is returned
    */
    public ArrayList<SceneCard> getCardData(Document d){
+      
       Element root = d.getDocumentElement(); //get root of the tree
       NodeList cards = root.getElementsByTagName("card");
       
-      //read data from each node
-      for(int i = 0; i < cards.getLength(); i++){
+      ArrayList<SceneCard> scenecards = new ArrayList<SceneCard>();
       
+      //read data from each card node
+      for(int i = 0; i < cards.getLength(); i++){
+         
+         SceneCard s = new SceneCard();
+         
          Node card = cards.item(i);
          String cardName = card.getAttributes().getNamedItem("name").getNodeValue();
-         //int cardBudget = card.getAttributes().getNamedItem("budget").getNodeValue();
+         int cardBudget = Integer.parseInt(card.getAttributes().getNamedItem("budget").getNodeValue());
          
+         //add these to the scene card
          
+         NodeList children = card.getChildNodes();
+         
+         for(int j = 0; j < children.getLength(); j++){
+            Node child = children.item(j);
+            
+            if("scene".equals(child.getNodeName())){
+               
+               //get the attribute "number" from the scene and convert it from String to in
+               int sceneNumber = Integer.parseInt(child.getAttributes().getNamedItem("number").getNodeValue());
+               
+               //get the scene text from the element content
+               String sceneText = child.getTextContent();
+               
+               /*Now add these to the scene card*/
+               
+               
+               
+            }
+            
+            else if("part".equals(child.getNodeName())){
+               //do stuff with the part
+               
+               //additional for loop
+                  //if line, extract that and put it in Scene Card
+                  //if area, don't do anything with that we don't need it right now 
+            }
+         }
+         
+         //add the Scene Card s to scenecards
       }
-      return new ArrayList<SceneCard>();
+      //return scenecards
+      return new ArrayList<SceneCard>();//temp
    }
    
    /*
