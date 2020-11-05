@@ -29,7 +29,9 @@ public class Dice{
       postcond: acting roll is returned
    */
    public int rollAct(int bonus){
-      return 0; //temp
+      int roll = (int)(Math.random()*6) + 1;
+      roll += bonus;
+      return roll;
    }
    
 }
