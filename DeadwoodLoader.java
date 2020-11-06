@@ -30,7 +30,6 @@ public class DeadwoodLoader{
       
       Element root = d.getDocumentElement(); //get root of the tree
       NodeList cards = root.getElementsByTagName("card");
-      
       ArrayList<SceneCard> scenecards = new ArrayList<SceneCard>();
       
       //read data from each card node
@@ -39,11 +38,16 @@ public class DeadwoodLoader{
          SceneCard s = new SceneCard();
          
          Node card = cards.item(i);
-         String cardName = card.getAttributes().getNamedItem("name").getNodeValue();
-         int cardBudget = Integer.parseInt(card.getAttributes().getNamedItem("budget").getNodeValue());
+         
+         //get the scene name and budget
+         String sceneName = card.getAttributes().getNamedItem("name").getNodeValue();
+         int sceneBudget = Integer.parseInt(card.getAttributes().getNamedItem("budget").getNodeValue());
          
          //add these to the scene card
+         s.setSceneBudget(sceneBudget);
+         s.sceneName = sceneName;
          
+         //create a nodelists for all the card's child nodes
          NodeList children = card.getChildNodes();
          
          for(int j = 0; j < children.getLength(); j++){
@@ -51,32 +55,57 @@ public class DeadwoodLoader{
             
             if("scene".equals(child.getNodeName())){
                
-               //get the attribute "number" from the scene and convert it from String to in
+               //get the attribute "number" from the scene and convert it from String to int
                int sceneNumber = Integer.parseInt(child.getAttributes().getNamedItem("number").getNodeValue());
                
                //get the scene text from the element content
                String sceneText = child.getTextContent();
                
                /*Now add these to the scene card*/
-               
-               
+               s.setSceneNumber(sceneNumber);
+               s.setSceneText(sceneText);
                
             }
             
             else if("part".equals(child.getNodeName())){
-               //do stuff with the part
+                  
+               //create a new role to add to the scene card
+               Role r = new Role();
+                  
+               String partName = child.getAttributes().getNamedItem("name").getNodeValue();
                
-               //additional for loop
-                  //if line, extract that and put it in Scene Card
-                  //if area, don't do anything with that we don't need it right now 
+               int partRank = Integer.parseInt(child.getAttributes().getNamedItem("level").getNodeValue());
+               
+               //add these values to newly created role
+               r.name = partName;
+               r.setRank(partRank);
+               
+               NodeList part_children = child.getChildNodes();
+               
+               for(int k = 0; k < part_children.getLength(); k++){
+                  Node part_child = part_children.item(k);
+                  
+                  if("line".equals(part_child.getNodeName())){
+                     
+                     //get role line from this element's text content
+                     String roleLine = part_child.getTextContent();
+                     
+                     r.setLine(roleLine);
+                  }
+               }
+               //add role to scene card
+               s.addRole(r);
             }
          }
          
          //add the Scene Card s to scenecards
+         scenecards.add(s);
       }
-      //return scenecards
-      return new ArrayList<SceneCard>();//temp
+      return scenecards;
+      //return new ArrayList<SceneCard>();//temp
    }
+   
+   
    
    /*
       getDocFromFile(String fileName)
@@ -98,4 +127,6 @@ public class DeadwoodLoader{
       
       return doc;
    }
+   
+   
 }

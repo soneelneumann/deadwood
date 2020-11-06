@@ -27,6 +27,17 @@ public class SceneCard{
    }
    
    /*
+   addRole()
+   returns: 
+   precond: r is a non empty Role
+   postcond: r is added into roles
+   Adds a new Role to the list of Roles in the scene card
+   */
+   public void addRole(Role r){
+      roles.add(r);
+   }
+   
+   /*
    getSceneBudget() 
    Returns: int
    Precondtion: There is a budget attached to a scene card
