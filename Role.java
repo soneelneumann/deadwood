@@ -69,4 +69,5 @@ public class Role{
    public void setLine(String line){
       this.line = line;
    }
+   
 }  
