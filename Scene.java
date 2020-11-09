@@ -2,8 +2,8 @@ import java.util.ArrayList;
 
 public class Scene extends Room{
    
-   //name of the set 
-   private String setName;
+   //name of the set
+   private String setName; //MIGHT NOT BE NECESSARY
    
    //scene card in the card slot, null when there is no scene card
    private SceneCard sceneCard;
@@ -37,6 +37,16 @@ public class Scene extends Room{
    */
    public void removeShotTokens(){
       shotTokens = 0;
+   }
+   
+   /*setter for shot tokens*/
+   public void setShotTokens(int shotTokens){
+      this.shotTokens = shotTokens;
+   }
+   
+   /*getter for shot tokens*/
+   public int getShotTokens(){
+      return shotTokens;
    }
    
    /*

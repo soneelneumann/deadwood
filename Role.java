@@ -14,6 +14,10 @@ public class Role{
       */
    }
    
+   public String toString(){
+      return ("rank: " + rank + "|taken? " + isTaken + "|line: " + line);
+   }
+   
    /*
       getRank()
       returns: int 

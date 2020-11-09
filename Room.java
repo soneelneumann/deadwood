@@ -12,7 +12,25 @@ public class Room{
       
       occupants = new ArrayList<Player>();
       neighbors = new ArrayList<Room>();
+      roomName = "";
+   }
+   
+   
+   /*toString method, used in printing for tests mostly*/
+   public String toString(){
+      /*
+      String output = "";
       
+      output += ("Name: " + roomName);
+      output += ("Neighbors: \n");
+      for(Room r: neighbors){
+         output += (r.roomName + "\n");
+      }
+      
+      return output;
+      */
+      
+      return roomName;
    }
    
    /*room initializer, with roomName*/
@@ -20,6 +38,10 @@ public class Room{
       occupants = new ArrayList<Player>();
       neighbors = new ArrayList<Room>();
       this.roomName = roomName;
+   }
+   
+   public ArrayList<Room> getNeighbors(){
+      return new ArrayList<Room>(neighbors);
    }
    
    /*

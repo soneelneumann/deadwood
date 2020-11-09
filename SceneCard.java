@@ -13,7 +13,8 @@ public class SceneCard{
    
    /* Scene card initializer */
    public SceneCard(){
-      //stuff goes here   
+      //stuff goes here 
+      roles = new ArrayList<Role>();  
    }
    
    /* Scene card initializer given the scene's name */
@@ -70,7 +71,7 @@ public class SceneCard{
    This method gets the roles of the scene card available to the user
    */
    public ArrayList<Role> getRoles(){
-      return new ArrayList<Role>(); //temp
+      return roles; 
    }
    
    

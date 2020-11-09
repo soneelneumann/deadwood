@@ -18,6 +18,17 @@ public class XMLParser{
       
    }
    
+   public XMLParser(){
+      //do stuff
+   }
+   
+   /*
+      gets card data from file 
+   */
+   public ArrayList<SceneCard> getCards(String filename) throws ParserConfigurationException{
+      Document doc = getDocFromFile(filename);
+      return getCardData(doc);
+   }
    
    /*
       getCardData(Document d)
@@ -105,6 +116,12 @@ public class XMLParser{
       //return new ArrayList<SceneCard>();//temp
    }
    
+   /*get room information from a document d*/
+   public ArrayList<Room> getRooms(String filename) throws ParserConfigurationException{
+      Document doc = getDocFromFile(filename);
+      return getBoardData(doc);
+   }
+   
    /*
    getBoardData()
    returns: ArrayList<Room> of rooms with all neighbors filled in, plus trailers and casting office
@@ -112,85 +129,151 @@ public class XMLParser{
    postcond: rooms are returned with corrected neighboring 
    */
    public ArrayList<Room> getBoardData(Document d){
-      Element root = d.getDocumentElement();
-      NodeList scenes = root.getChildNodes();
+      Element root = d.getDocumentElement();       
+      NodeList scenes = root.getElementsByTagName("set");
+      
       ArrayList<Room> roomlist = new ArrayList<Room>(); //what we'll return at the end
       
-      //add all rooms to roomlist without neighbors
+      //add all scenes to roomlist, with shot tokens
       for(int i = 0; i < scenes.getLength(); i++){
          Node room = scenes.item(i);
          
-         if("trailer".equals(room.getNodeName())){
-            Trailers t = new Trailers();
-            t.roomName = "Trailers";
-            roomlist.add(t); 
+         
+         Scene s = new Scene();
+         s.roomName = room.getAttributes().getNamedItem("name").getNodeValue();
+         
+                     
+         //set up scene's shot tokens
+         NodeList children = room.getChildNodes(); 
+         for(int j = 0; j < children.getLength(); j++){
+            Node child = children.item(j);
+            
+            
+            if(child.getNodeName().equals("takes")){
+               int shotTokens = 0; //scene has no shot tokens unless file says otherwise
+               NodeList takes = child.getChildNodes();
+               for(int k = 0; k < takes.getLength(); k++){
+                  Node take = takes.item(k);
+                  if(take.getNodeType() == Node.ELEMENT_NODE){
+                     //System.out.println(take.getNodeName()); //HERE
+                      
+                     int takeNumber = Integer.parseInt(take.getAttributes().getNamedItem("number").getNodeValue());
+                     
+                     //if the take in takes has a higher number than current shot tokens
+                     if(shotTokens < takeNumber){
+                        shotTokens = takeNumber;
+                     }
+                  }
+                  
+               }
+               
+               //give set appropriate amount of shot tokens 
+               s.setShotTokens(shotTokens);
+            }
          }
-         else if("office".equals(room.getNodeName())){
-            CastingOffice c = new CastingOffice();
-            c.roomName = "Casting Office";
-         }
-         else{
-            Scene s = new Scene();
-            s.roomName = room.getAttributes().getNamedItem("name").getNodeValue();
-            roomlist.add(s);
-         }
+         
+         //add full prepped scene to the roomlist
+         roomlist.add(s);
       }
+      
+      //add trailers to roomlist
+      Trailers t = new Trailers();
+      t.roomName = "trailers"; //different than I thought it would be
+      roomlist.add(t);
+      
+      //add casting office to roomlist
+      CastingOffice c = new CastingOffice();
+      c.roomName = "office"; //different than I thought it would be
+      roomlist.add(c);
       
       //fill in neighbors
       
-      NodeList rooms = root.getChildNodes();
+      //NodeList rooms = root.getChildNodes(); //problem area
       
-      for(int i = 0; i < rooms.getLength(); i++){
-         Node room = rooms.item(i);
-         
-         String roomName = ""; //blank, to be filled in
-         
-         //get the Node's name
-         if("set".equals(room.getNodeName())){
-            roomName = room.getAttributes().getNamedItem("name").getNodeValue();
+      NodeList sets = root.getElementsByTagName("set"); //
+      
+      
+      
+      //fill in neighbors for the sets
+      
+      for(int i = 0; i < sets.getLength(); i++){
+         Node set = sets.item(i);
+         if(set.getNodeType() == Node.ELEMENT_NODE){
+            roomlist = addNeighbors(set, roomlist);
+         }  
+      }
+      
+      //fill in neighbors for the trailers
+      NodeList trailers = root.getElementsByTagName("trailer");
+      
+      for(int i = 0; i < trailers.getLength(); i++){
+         Node trailer = trailers.item(i);
+         if(trailer.getNodeType() == Node.ELEMENT_NODE){
+            roomlist = addNeighbors(trailer, roomlist);
          }
-         else if("office".equals(room.getNodeName())){
-             roomName = "Casting Office";
-         }
-         else{
-            roomName = "Trailers";
-         }
-         
-         Room thisRoom = new Room(); //blank, to be filled in
-         
-         //find the Room object in the roomlist Array with the same name
-         for(Room r : roomlist){
-            if(r.roomName.equals(roomName)){
-               thisRoom = r;
-            }
-         }
-         
-         //NodeList neighbors = room.getElementsByTagName("neighbors").item(0).getChildNodes();
-         NodeList neighbors = root.getChildNodes(); //blank, to be filled in
-         
-         NodeList children = room.getChildNodes();
-         for(int k = 0; k<children.getLength(); k++){
-            Node child = children.item(k);
-            if(child.getNodeName().equals("neighbors")){
-               neighbors = child.getChildNodes();
-            }
-         }
-         
-         for(int j = 0; j < neighbors.getLength(); j++){
-            Node n = neighbors.item(j);
-            String neighborName = n.getAttributes().getNamedItem("name").getNodeValue();
-            
-            for(Room r: roomlist){
-               if(r.roomName.equals(neighborName)){
-                  thisRoom.addNeighbor(r);
-               }
-            }
+      }
+      
+      //fill in neighbors for the casting office
+      NodeList offices = root.getElementsByTagName("office");
+      
+      for(int i = 0; i < offices.getLength(); i++){
+         Node office = offices.item(i);
+         if(office.getNodeType() == Node.ELEMENT_NODE){
+            roomlist = addNeighbors(office, roomlist);
          }
       }
       
       return roomlist;
-      //return new ArrayList<Room>();//temp
    }
+   
+   /*
+   addNeighbors()
+   returns: ArrayList<Room>, modified version of the input arraylist
+   precond: Node room != Null, roomlist != null
+   postcond: room which corresponds to the Node has all its neighbors filled out
+   */
+   private ArrayList<Room> addNeighbors(Node room, ArrayList<Room> roomlist){
+      String roomName = ""; //blank, to be filled in later
+      
+      if(room.getNodeName().equals("set")){
+         roomName = room.getAttributes().getNamedItem("name").getNodeValue();
+
+      }
+      else if(room.getNodeName().equals("office")){
+         roomName = "office";
+      }
+      else{
+         roomName = "trailers";
+      }
+      
+      Room thisRoom = new Room(); //blank, to be filled in later
+      for(Room r: roomlist){
+         if(r.roomName.equals(roomName)){
+            thisRoom = r; //specific room object to fill in neighbors for
+         }
+      }
+      NodeList children = room.getChildNodes();
+      for(int i = 0; i < children.getLength(); i++){
+         Node child = children.item(i);
+         if(child.getNodeName().equals("neighbors")){
+            NodeList neighbors = child.getChildNodes();
+            for(int j = 0; j < neighbors.getLength(); j++){
+               Node neighbor = neighbors.item(j);
+               //if the node isn't blank space:
+               if(neighbor.getNodeType() == Node.ELEMENT_NODE){
+                  String neighborName = neighbor.getAttributes().getNamedItem("name").getNodeValue();
+                  for(Room r: roomlist){
+                     if(r.roomName.equals(neighborName)){
+                        thisRoom.addNeighbor(r); //add r as a neighbor of thisRoom
+                     }
+                  }
+               }
+            }
+         }
+      }
+      return roomlist; //return modified roomlist
+   }
+   
    
    /*
       getDocFromFile(String fileName)

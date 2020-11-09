@@ -216,7 +216,7 @@ public class Player{
    */
    public boolean takeRole(Role r){
       //try to take a role
-      Moderator m = new Moderator(); //temp
+      //Moderator m = new Moderator(); //temp
       return false; //temp
    }
    
