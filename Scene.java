@@ -2,9 +2,6 @@ import java.util.ArrayList;
 
 public class Scene extends Room{
    
-   //name of the set
-   private String setName; //MIGHT NOT BE NECESSARY
-   
    //scene card in the card slot, null when there is no scene card
    private SceneCard sceneCard;
    
