@@ -64,7 +64,7 @@ public class Board{
    resetBoard()
    returns: null
    Precondition: board is cleared
-   Postcondition: players are in their trialers, new scene cards are placed and shot tokens reset.
+   Postcondition: players are in their trailers, new scene cards are placed and shot tokens reset.
    This method sets the board back up for the next day to be played.
    */
    public void resetBoard(){

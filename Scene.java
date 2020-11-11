@@ -25,17 +25,6 @@ public class Scene extends Room{
       shotTokens = shotTokenMax;
    }
    
-   /*
-      removeShotTokens()
-      returns:
-      description: removes all shot tokens
-      precond: 
-      postcond: all shot tokens are removed
-   */
-   public void removeShotTokens(){
-      shotTokens = 0;
-   }
-   
    /*setter for shot tokens*/
    public void setShotTokens(int shotTokens){
       this.shotTokens = shotTokens;
@@ -78,17 +67,6 @@ public class Scene extends Room{
    */
    public void removeSceneCard(){
       //remove it I guess, you heard the man
-   }
-   
-   /*
-      endScene()
-      returns:
-      description: ends the scene
-      precond:
-      postcond: scene is completely finished, wrap up is complete
-   */
-   public void endScene(){
-      //do stuff
    }
    
 }

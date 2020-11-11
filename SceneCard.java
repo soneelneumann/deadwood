@@ -4,7 +4,7 @@ public class SceneCard{
    public String sceneName;
    
    private String sceneText;
-   private String sceneLine;
+
    private int sceneNumber;
    
    private int sceneBudget;
@@ -121,29 +121,5 @@ public class SceneCard{
    */
    public void setSceneText(String sceneText){
       this.sceneText = sceneText;
-   }
-   
-   /*
-   getSceneLine()
-   returns: String, sceneLine text
-   precond:
-   postcond: sceneLine text is returned
-   
-   getter for sceneLine
-   */
-   public String getSceneLine(){
-      return sceneLine;
-   }
-   
-   /*
-   setSceneLine()
-   returns: 
-   precond: 
-   postcond: sceneLine is changed to input String
-   
-   Setter for sceneLine 
-   */
-   public void setSceneLine(String sceneLine){
-      this.sceneLine = sceneLine;
    }
 }
