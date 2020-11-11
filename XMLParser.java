@@ -8,6 +8,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 
 import java.util.ArrayList;
+import java.util.TreeMap;
 
 public class XMLParser{
    
@@ -140,7 +141,7 @@ public class XMLParser{
          
          
          Scene s = new Scene();
-         s.roomName = room.getAttributes().getNamedItem("name").getNodeValue();
+         s.setName(room.getAttributes().getNamedItem("name").getNodeValue());
          
                      
          //set up scene's shot tokens
@@ -178,12 +179,17 @@ public class XMLParser{
       
       //add trailers to roomlist
       Trailers t = new Trailers();
-      t.roomName = "trailers"; //different than I thought it would be
+      t.setName("trailers"); // C H A N G E "trailers"
       roomlist.add(t);
       
       //add casting office to roomlist
-      CastingOffice c = new CastingOffice();
-      c.roomName = "office"; //different than I thought it would be
+      
+      
+         //get prices for money and credits
+      int[] creditPrices = getPrices(root, "credit");
+      int[] moneyPrices = getPrices(root, "dollar");
+      CastingOffice c = new CastingOffice(moneyPrices, creditPrices);
+      c.setName("office"); // C H A N G E "office"
       roomlist.add(c);
       
       //fill in neighbors
@@ -248,7 +254,7 @@ public class XMLParser{
       
       Room thisRoom = new Room(); //blank, to be filled in later
       for(Room r: roomlist){
-         if(r.roomName.equals(roomName)){
+         if(r.getName().equals(roomName)){
             thisRoom = r; //specific room object to fill in neighbors for
          }
       }
@@ -263,7 +269,7 @@ public class XMLParser{
                if(neighbor.getNodeType() == Node.ELEMENT_NODE){
                   String neighborName = neighbor.getAttributes().getNamedItem("name").getNodeValue();
                   for(Room r: roomlist){
-                     if(r.roomName.equals(neighborName)){
+                     if(r.getName().equals(neighborName)){
                         thisRoom.addNeighbor(r); //add r as a neighbor of thisRoom
                      }
                   }
@@ -274,6 +280,42 @@ public class XMLParser{
       return roomlist; //return modified roomlist
    }
    
+   /*
+   getPrices()
+   returns: int[], prices related to given currency: position = related rank - 2
+   precond: currency == "credit" or "dollar"
+   postcond: array with all relevant prices is returned
+   */
+   public int[] getPrices(Element root, String currency){
+      int[] prices = new int[5];
+      
+      NodeList offices = root.getElementsByTagName("office");
+      
+      Node office = offices.item(0);
+      
+      NodeList officeChildren = office.getChildNodes();
+      for(int i = 0; i < officeChildren.getLength(); i++){
+         Node child = officeChildren.item(i);
+         if(child.getNodeType() == Node.ELEMENT_NODE){
+            if(child.getNodeName().equals("upgrades")){
+               NodeList upgrades = child.getChildNodes();
+               for(int j = 0; j < upgrades.getLength(); j++){
+                  Node upgrade = upgrades.item(j);
+                  if(upgrade.getNodeType() == Node.ELEMENT_NODE){
+                     String upgradeCurrency = upgrade.getAttributes().getNamedItem("currency").getNodeValue();
+                     if(upgradeCurrency.equals(currency)){
+                        int level = Integer.parseInt(upgrade.getAttributes().getNamedItem("level").getNodeValue());
+                        int amt = Integer.parseInt(upgrade.getAttributes().getNamedItem("amt").getNodeValue());
+                        
+                        prices[level-2] = amt;
+                     }
+                  } 
+               }
+            }
+         }
+      } 
+      return prices;
+   }
    
    /*
       getDocFromFile(String fileName)

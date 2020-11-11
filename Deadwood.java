@@ -1,6 +1,29 @@
+import java.util.ArrayList;
+import javax.xml.parsers.ParserConfigurationException;
+
 public class Deadwood{
-   public static void main(String[] args){
+   public static void main(String[] args) throws ParserConfigurationException{
 //       initialize board
+      Board b = new Board();
+      
+      XMLParser xml = new XMLParser();
+      
+      ArrayList<Room> roomList = xml.getRooms("board.xml");
+      
+      
+      
+      for(Room r : roomList){
+         if(r.getName().equals("trailers")){
+            r.setName("Trailers");
+            b.setTrailers(r);
+         }
+         else if(r.getName().equals("office")){
+            r.setName("Casting Office");
+         }
+      }
+      b.setRoomList(roomList); //fill in roomlist for board
+      
+      
 //       initialize XMLParser
 //       Fill in board values using parser
 //       
@@ -51,7 +74,7 @@ public class Deadwood{
    /*
       Displays where the player is and if they are in a scene
    */
-   public static void where(Player, Board){
+   public static void where(Player p, Board b){
 
    }
    

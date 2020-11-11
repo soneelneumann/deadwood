@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 public class Room{
    
-   public String roomName;
+   private String roomName;
    
    private ArrayList<Player> occupants;
    
@@ -53,6 +53,16 @@ public class Room{
    */
    public void addNeighbor(Room r){
       neighbors.add(r);
+   }
+   
+   /*getter for the room name*/
+   public String getName(){
+      return roomName; 
+   }
+   
+   /*setter for the room name*/
+   public void setName(String roomName){
+      this.roomName = roomName;
    }
    
    /*

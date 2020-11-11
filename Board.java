@@ -4,11 +4,19 @@ import java.util.Collections;
 public class Board{
    
    private ArrayList<Scene> scenes;
-   private Trailers trailers;
-   private CastingOffice castingOffice;
+   private Room trailers;
+   //private room castingOffice; //superfluous?
    private ArrayList<Room> rooms;
    
    /* Board initializer */
+   public Board(){
+      trailers = new Room();
+      //castingOffice = new CastingOffice();
+      rooms = new ArrayList<Room>();
+   }
+   
+   /* Board initializer */
+   /*
    public Board(){
       scenes = new ArrayList<Scene>();
       trailers = new Trailers();
@@ -24,6 +32,33 @@ public class Board{
       rooms.add(castingOffice);
       
    }
+   */
+   
+   /* setter for rooms */
+   public void setRoomList(ArrayList<Room> rooms){
+      this.rooms = rooms;
+   }
+   
+   public void setSceneList(ArrayList<Scene> scenes){
+      this.scenes = scenes;
+   }
+   
+   public void setTrailers(Room trailers){
+      this.trailers = trailers;
+   }
+   
+   /*
+   public void setOffice(CastingOffice castingOffice){
+      this.castingOffice = castingOffice;
+   }
+   */
+   
+   /*adds a room to roomList*/
+   /*
+   public void addRoom(Room r){
+      rooms.add(r);
+   }
+   */
    
    /*
    find(Player player)
@@ -54,7 +89,7 @@ public class Board{
       //clear the board
       for(Scene s: scenes){
          //clear all tokens
-         s.removeShotTokens();
+         s.setShotTokens(0); //remove all shot tokens
          //clear scene card
          s.removeSceneCard();
       }
@@ -69,6 +104,9 @@ public class Board{
    */
    public void resetBoard(){
       //put all players in the trailers
+      for(Scene s: scenes){
+         
+      }
       //reset tokens and replenish scene cards
    }
    
