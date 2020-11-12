@@ -47,23 +47,28 @@ public class Moderator{
    public boolean checkRankUp(Player player, int rankRequested, String currencyType){
       //
       if(player.getRank() == 6){
+            System.out.println("Your rank is too low");
             return false;
       }
       if(currencyType.equals("c")){
          
          if(player.getCurrentRoom().getRankCreditPrices() == null){
+            System.out.println("You can only purchase a rank in the casting office.");
             return false;
          }
          else if(player.getCredits() < player.getCurrentRoom().getRankCreditPrices()[rankRequested - 2]){
+            System.out.println("You do not have enough credits for this rank");
             return false;
          }
          return true;
       }
       else{
          if(player.getCurrentRoom().getRankMoneyPrices() == null){
+            System.out.println("You can only purchase a rank in the casting office.");
             return false;
          }
          else if(player.getMoney() < player.getCurrentRoom().getRankMoneyPrices()[rankRequested - 2]){
+            System.out.println("You do not have enough money for this rank");
             return false;
          }
          return true;
@@ -75,7 +80,7 @@ public class Moderator{
       params: Player p, who 
       returns: boolean
       
-      this doesn't need to be here maybr. just use Dice to roll and have Player check maybe
+      checks if the player is succesful in acting in their scene
    */
    public boolean checkAct(Player player){
       Dice d = new Dice();

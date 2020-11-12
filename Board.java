@@ -7,6 +7,7 @@ public class Board{
    //private room castingOffice; //superfluous?
    private ArrayList<Room> rooms;
    private ArrayList<Scene> scenes; //needs to be changed, I can't make this work
+   private ArrayList<Player> players;
    
    /* Board initializer */
    public Board(){
@@ -33,6 +34,14 @@ public class Board{
       
    }
    */
+   
+   public ArrayList<Player> getPlayerList(){
+      return new ArrayList<Player>(players);
+   }
+   
+   public void addPlayer(Player player){
+      players.add(player);
+   }
    
    /* setter for rooms */
    public void setRoomList(ArrayList<Room> rooms){

@@ -37,9 +37,14 @@ public class Deadwood{
       //initialize our Players
       Player[] players = new Player[playerAmount];
       
-      for(int i = 0; i < playerAmount; i++){
+      for(int i = 0; i < players.length; i++){
          Player p = new Player(i + 1); //create new player with corresponding playerNumber
          players[i] = p;
+      }
+      
+      //put players in the board's player list
+      for(int i = 0; i < players.length; i++){
+         b.addPlayer(players[i]);
       }
       
       players = shufflePlayerOrder(players);
@@ -99,6 +104,7 @@ public class Deadwood{
             
          }
       }
+      
       
 //       put Players in the trailers
 //       display tutorial text 
@@ -165,7 +171,7 @@ public class Deadwood{
             if(moderator.checkMove(player.getCurrentRoom(), destination)){
                player.move(board.getRoom(destination));
                
-               String[] newAvailableActions = new String[]{"role", "where", "day", "rank", "end"};
+               String[] newAvailableActions = new String[]{"role", "where", "day", "rank", "stats", "end"};
                parseTurn(moderator, board, player, scan, newAvailableActions);
             }
             else{
@@ -179,10 +185,12 @@ public class Deadwood{
                int rankRequested = Integer.parseInt(scan.next());
                String currencyType = scan.next();
                if(!(currencyType.toLowerCase().equals("money") || currencyType.toLowerCase().equals("credits"))){
-                  System.out.println("Please enter in \"credits\" or \"money\" after ")
+                  System.out.println("Please enter in \"credits\" or \"money\" after the rank you would like.");
                }
-               else if(moderator.checkRankUp(player)){
-                  
+               else if(moderator.checkRankUp(player, rankRequested, currencyType)){
+                  //player.rankUp()
+                  System.out.println("You now are now rank " + player.getRank());
+                  System.out.println("You now have " + player.getMoney() + " dollars and " + player.getCredits() + " credits.");
                }
             }
             catch(Exception numberFormatException){
@@ -190,7 +198,7 @@ public class Deadwood{
                parseTurn(moderator, board, player, scan, availableActions);
             }
             
-            String[] newAvailableActions = new String[]{"move", "where", "role", "day", "end"};
+            String[] newAvailableActions = new String[]{"move", "where", "role", "day", "stats", "end"};
             parseTurn(moderator, board, player, scan, newAvailableActions);
             break;
             
@@ -236,13 +244,29 @@ public class Deadwood{
             else{
                System.out.println("You've rehearsed enough! Now you must act.");
                
-               newAvailableActions = new String[]{"act", "where", "day", "end"};
+               newAvailableActions = new String[]{"act", "where", "day", "stats", "end"};
                parseTurn(moderator, board, player, scan, newAvailableActions);
             }
             break;
             
          case "day":
             System.out.println("There are " + moderator.getMaxDaysLeft());
+            parseTurn(moderator, board, player, scan, availableActions);
+            break;
+            
+         case "stats":
+            if(player.getCurrentRole() == null){
+               System.out.println("Your stats:");
+               System.out.println("\tRank: " + player.getRank());
+               System.out.println("\tMoney: " + player.getMoney());
+               System.out.println("\tCredits: " + player.getCredits());
+            }
+            else{
+               System.out.println("Your stats:");
+               System.out.println("\tPractice Tokens: " + player.getPracticeTokens());
+               System.out.println("\tScene shot tokens: " + player.getCurrentRoom().getShotTokens());
+            }
+            
             parseTurn(moderator, board, player, scan, availableActions);
          }
       }
