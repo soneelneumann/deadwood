@@ -127,14 +127,13 @@ public class Player{
    }
    
    /*
-      purchaseRank(int rank)
+      purchaseRankCredits(int rank)
       parameters: int rank
       returns: none
       
-      attempts to purchase a certain rank, based on int given
+      attempts to purchase a certain rank with credits, based on int given
    */
 
-   //BREAK INTO 2 METHODS
    public void purchaseRankCredits(int rank){
       String failed = "Purchase failed, insufficient funds.";
       if(rank == 2){
@@ -186,6 +185,14 @@ public class Player{
          System.out.println("Rank isn't offered");
       }
    }
+
+   /*
+      purchaseRankCredits(int rank)
+      parameters: int rank
+      returns: none
+      
+      attempts to purchase a certain rank with money, based on int given
+   */
 
    public void purchaseRankMoney(int rank){
       String failed = "Purchase failed, insufficient funds.";
@@ -271,7 +278,7 @@ public class Player{
       postcondition: player either gets a shot token or is forced to act
    */
    public void rehearse(Scene scene, SceneCard sceneCard){
-         if(getPracticeTokens() == sceneCard.getSceneBudget()){
+         if(this.practiceTokens == sceneCard.getSceneBudget()){
             act(scene);
          }
          else{
@@ -292,15 +299,13 @@ public class Player{
    
    /*
       takeRole()
-      returns: boolean
+      returns: 
       description: player attempts to take a role in a scene
       precondition: it is this player's turn
-      postcondition: player returns boolean for success(t) or failure(f)
+      postcondition: player has new role
    */
-   public boolean takeRole(Role r){
-      //try to take a role
-      //Moderator m = new Moderator(); //temp
-      return false; //temp
+   public void takeRole(Role r){
+      setCurrentRole(r);
    }
    
 }
