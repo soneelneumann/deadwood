@@ -19,12 +19,13 @@ public class SceneCard{
    
    /* Scene card initializer given the scene's name */
    public SceneCard(String sceneName){
-      //stuff goes here   
+      this.sceneName = sceneName;   
    }
    
    /* Scene card initializer given the scene's name and the scene's budget */
    public SceneCard(String sceneName, int sceneBudget){
-      //stuff goes here
+      this.sceneName = sceneName;
+      this.sceneBudget = sceneBudget;
    }
    
    /*
