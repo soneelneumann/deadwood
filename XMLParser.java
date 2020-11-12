@@ -174,10 +174,9 @@ public class XMLParser{
             else if(child.getNodeName().equals("parts")){
                NodeList parts = child.getChildNodes();
                for(int k = 0; k < parts.getLength(); k++){
-                  if(parts.item(i) != null){
-                     Node part = parts.item(i);
+                  if(parts.item(k) != null){
+                     Node part = parts.item(k);
                      if(part.getNodeName().equals("part")){
-                        System.out.println(part.getNodeName());
                         if(part.getNodeType() == Node.ELEMENT_NODE){
                            Role r = new Role();
                            String partName = part.getAttributes().getNamedItem("name").getNodeValue();
