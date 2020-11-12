@@ -177,7 +177,13 @@ public class Deadwood{
          case "rank":
             try{
                int rankRequested = Integer.parseInt(scan.next());
-               //if(moderator.checkRankUp(player)){}
+               String currencyType = scan.next();
+               if(!(currencyType.toLowerCase().equals("money") || currencyType.toLowerCase().equals("credits"))){
+                  System.out.println("Please enter in \"credits\" or \"money\" after ")
+               }
+               else if(moderator.checkRankUp(player)){
+                  
+               }
             }
             catch(Exception numberFormatException){
                System.out.println("Looks like you didn't input just a number after \"rank\". Make sure you type \"rank <number>\".");
@@ -247,7 +253,7 @@ public class Deadwood{
       System.out.println("This game has the same rules the board game does. The available commands are:");
       System.out.println("move <room name> : Move to another room.");
       System.out.println("role <role name> : Take a role with this name.");
-      System.out.println("rank <rank number> : purchase a rank. Must be ");
+      System.out.println("rank <rank number> <money/credits>: purchase a rank. Must be ");
       System.out.println("where : shows relevant info of the room you're in and its neighbors");
       System.out.println("act : Act in a scene you're in");
       System.out.println("rehearse : rehearse in a scene you're in");

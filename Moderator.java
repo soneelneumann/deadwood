@@ -46,7 +46,11 @@ public class Moderator{
    */
    public boolean checkRankUp(Player player, int rankRequested, String currencyType){
       //
+      if(player.getRank() == 6){
+            return false;
+      }
       if(currencyType.equals("c")){
+         
          if(player.getCurrentRoom().getRankCreditPrices() == null){
             return false;
          }
