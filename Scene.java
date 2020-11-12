@@ -16,6 +16,7 @@ public class Scene extends Room{
    
    /*Scene initializer*/
    public Scene(){
+      roles = new ArrayList<Role>();
       //stuff goes here
    }
    
@@ -23,6 +24,11 @@ public class Scene extends Room{
    public Scene(int shotTokenMax){
       this.shotTokenMax = shotTokenMax;
       shotTokens = shotTokenMax;
+   }
+   
+   /*adds input role to roles*/
+   public void addRole(Role r){
+      roles.add(r);
    }
    
    /*setter for shot tokens*/

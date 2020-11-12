@@ -20,6 +20,9 @@ public class Player{
    //player's current role, null if they are not in a scene role
    private Role currentRole;
    
+   //room the player is currently in 
+   private Room currentRoom;
+   
    /*
       Player initializer
    */
@@ -47,7 +50,22 @@ public class Player{
    public void setRank(int pRank){
       this.rank = pRank;
    }
-
+   
+   /*
+   getter for the currentRoom
+   */
+   public Room getCurrentRoom(){
+      return currentRoom;
+   }
+   
+   public Role getCurrentRole(){
+      return currentRole;
+   }
+   
+   public void setCurrentRole(Role currentRole){
+      this.currentRole = currentRole;
+   }
+   
    public void setMoney(int pMoney){
       this.money = pMoney;
    }

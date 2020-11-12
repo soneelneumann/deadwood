@@ -107,6 +107,7 @@ public class XMLParser{
                }
                //add role to scene card
                s.addRole(r);
+               r.setOnCard(true); //lets role know it is on a scene card
             }
          }
          
@@ -139,7 +140,6 @@ public class XMLParser{
       for(int i = 0; i < scenes.getLength(); i++){
          Node room = scenes.item(i);
          
-         
          Scene s = new Scene();
          s.setName(room.getAttributes().getNamedItem("name").getNodeValue());
          
@@ -156,7 +156,6 @@ public class XMLParser{
                for(int k = 0; k < takes.getLength(); k++){
                   Node take = takes.item(k);
                   if(take.getNodeType() == Node.ELEMENT_NODE){
-                     //System.out.println(take.getNodeName()); //HERE
                       
                      int takeNumber = Integer.parseInt(take.getAttributes().getNamedItem("number").getNodeValue());
                      
@@ -171,11 +170,48 @@ public class XMLParser{
                //give set appropriate amount of shot tokens 
                s.setShotTokens(shotTokens);
             }
-         }
+            
+            else if(child.getNodeName().equals("parts")){
+               NodeList parts = child.getChildNodes();
+               for(int k = 0; k < parts.getLength(); k++){
+                  if(parts.item(i) != null){
+                     Node part = parts.item(i);
+                     if(part.getNodeName().equals("part")){
+                        System.out.println(part.getNodeName());
+                        if(part.getNodeType() == Node.ELEMENT_NODE){
+                           Role r = new Role();
+                           String partName = part.getAttributes().getNamedItem("name").getNodeValue();
+                           int partRank = Integer.parseInt(part.getAttributes().getNamedItem("level").getNodeValue());
+                           
+                           r.name = partName; 
+                           r.setRank(partRank);
+                           
+                           NodeList partChildren = part.getChildNodes();
+                           for(int m = 0; m < partChildren.getLength(); m++){
+                              Node partChild = partChildren.item(m);
+                              if(partChild.getNodeType() == Node.ELEMENT_NODE){
+                                 if(partChild.getNodeName().equals("line")){
+                                    String partLine = partChild.getTextContent();
+                                    r.setLine(partLine);
+                                    r.setOnCard(false);
+                                 }
+                              }
+                           }
+                           s.addRole(r); //add role to the scene
+                        } 
+                     }
+                  }
+                  
+               }
+            }
+            
          
-         //add full prepped scene to the roomlist
+            //add full prepped scene to the roomlist
+            
+         }
          roomlist.add(s);
       }
+      
       
       //add trailers to roomlist
       Trailers t = new Trailers();
@@ -194,11 +230,7 @@ public class XMLParser{
       
       //fill in neighbors
       
-      //NodeList rooms = root.getChildNodes(); //problem area
-      
       NodeList sets = root.getElementsByTagName("set"); //
-      
-      
       
       //fill in neighbors for the sets
       

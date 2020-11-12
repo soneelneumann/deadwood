@@ -3,6 +3,7 @@ public class Role{
    private int rank;
    private boolean isTaken;
    private String line;
+   private boolean onCard; //whether or not role belongs to a scene card
    
    public String name;
    
@@ -74,4 +75,13 @@ public class Role{
       this.line = line;
    }
    
+   /*setter for onCard*/
+   public void setOnCard(boolean onCard){
+      this.onCard = onCard;
+   }
+   
+   /*getter for onCard*/
+   public boolean isOnCard(){
+      return onCard;
+   }
 }  

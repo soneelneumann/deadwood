@@ -2,11 +2,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class Board{
-   
-   private ArrayList<Scene> scenes;
+
    private Room trailers;
    //private room castingOffice; //superfluous?
    private ArrayList<Room> rooms;
+   private ArrayList<Scene> scenes; //needs to be changed, I can't make this work
    
    /* Board initializer */
    public Board(){
@@ -39,9 +39,11 @@ public class Board{
       this.rooms = rooms;
    }
    
+   /*
    public void setSceneList(ArrayList<Scene> scenes){
       this.scenes = scenes;
    }
+   */
    
    public void setTrailers(Room trailers){
       this.trailers = trailers;
@@ -67,6 +69,7 @@ public class Board{
    Postcondition: the board identifies the player and their location.
    This method parses through the rooms and checks to see which room the player is in and returns that room.
    */
+   /*
    public Room find(Player p){
       //find which room a given player is in
       for(Room r: rooms){
@@ -77,6 +80,7 @@ public class Board{
       
       return new Room(); //for compiler
    }
+   */
    
    /*
    clearBoard()
