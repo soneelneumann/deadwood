@@ -255,7 +255,11 @@ public class Player{
       
    */
    public void act(Scene scene){
-      //act in a scene
+      Dice d = new Dice();
+
+      if((d.rollAct(this.practiceTokens) > scene.getSceneCard().getSceneBudget())){
+         scene.setShotTokens(scene.getShotTokens() - 1);
+      }
    }
    
    
