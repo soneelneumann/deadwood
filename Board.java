@@ -39,6 +39,11 @@ public class Board{
       this.rooms = rooms;
    }
    
+   /*adds passed scene to scenes*/
+   public void addScene(Scene s){
+      scenes.add(s);
+   }
+   
    /*
    public void setSceneList(ArrayList<Scene> scenes){
       this.scenes = scenes;
@@ -47,6 +52,21 @@ public class Board{
    
    public void setTrailers(Room trailers){
       this.trailers = trailers;
+   }
+   
+   public Room getTrailers(){
+      return trailers;
+   }
+   
+   
+   /*returns a Room if there is one which has a matching name to the passed string. Returns null if none is found*/
+   public Room getRoom(String roomName){
+      for(Room r: rooms){
+         if(r.getName().equals(roomName)){
+            return r;
+         }
+      }
+      return null;
    }
    
    /*
@@ -69,7 +89,7 @@ public class Board{
    Postcondition: the board identifies the player and their location.
    This method parses through the rooms and checks to see which room the player is in and returns that room.
    */
-   /*
+   
    public Room find(Player p){
       //find which room a given player is in
       for(Room r: rooms){
@@ -80,7 +100,7 @@ public class Board{
       
       return new Room(); //for compiler
    }
-   */
+   
    
    /*
    clearBoard()

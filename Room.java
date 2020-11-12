@@ -99,6 +99,7 @@ public class Room{
       return new ArrayList<Player>(occupants); 
    }
    
+   
    /* 
    isPlayerHere()
    params: Player p, player we are looking for
@@ -114,5 +115,28 @@ public class Room{
       return false; 
    }
    
+   /*returns null, since bare rooms have no roles*/
+   public Role getRole(String s){
+      return null;
+   }
    
+   /*returns null, since bare rooms do not have prices*/
+   public int[] getRankMoneyPrices(){
+      return null;
+   }
+   
+   /*returns null, since bare rooms do not have prices*/
+   public int[] getRankCreditPrices(){
+      return null;
+   }
+   
+   /*returns null, since bare rooms do not have prices*/
+   public ArrayList<Role> getRoles(){
+      return null;
+   }
+   
+   /*returns null, since bare rooms do not have scene cards*/
+   public SceneCard getSceneCard(){
+      return null;
+   }
 }

@@ -24,7 +24,7 @@ public class CastingOffice extends Room{
    public int[] getRankMoneyPrices(){
       int[] temp = new int[prices_money.length]; //this will need to be changed to a Set<Integer>
       //put shallow copy of prices_money into temp
-      //System.arraycopy(prices_money, 0, temp, 0, temp.length);
+      System.arraycopy(prices_money, 0, temp, 0, temp.length);
       return temp;
       
    }

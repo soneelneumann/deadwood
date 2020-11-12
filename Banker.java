@@ -12,12 +12,23 @@ public class Banker{
          Role r, role the player was acting in
          bool success, true if player succeeded acting, false otherwise
    */
-   public void disperseRewards(Player p, Role r, boolean success){
+   public void disperseRewards(Player player, boolean success){
       if(success){
-         if(p.getCurrentRole)
+         //if player is in a role on a scene card
+         if(player.getCurrentRole().isOnCard()){
+            player.addCredits(2);
+         }
+         else{
+            player.addCredits(1);
+            player.addMoney(1);
+         }
       }
       else{
          //disperse loss rewards
+         //if player is not on a scene card role
+         if(!(player.getCurrentRole().isOnCard())){
+            player.addMoney(1);
+         }
       }
    }
    
@@ -31,8 +42,8 @@ public class Banker{
       precond: scene is being wrapped up
       postcond: player has been payed
    */
-   public int dispersePayout(Scene s, Role r){
+   public int[] dispersePayout(Scene s, Role r){
       //
-      
+      return new int[2];
    }
 }

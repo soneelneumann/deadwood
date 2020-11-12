@@ -31,6 +31,24 @@ public class Scene extends Room{
       roles.add(r);
    }
    
+   /*Return Role in the scene or scene card. Returns null if none are found*/
+   public Role getRole(String s){
+      for(Role r: roles){
+         if(r.name.equals(s)){
+            return r;
+         }
+      }
+      if(sceneCard != null){
+         for(Role r: sceneCard.getRoles()){
+            if(r.name.equals(s)){
+               return r;
+            }
+         }
+      }
+      return null;
+   }
+
+   
    /*setter for shot tokens*/
    public void setShotTokens(int shotTokens){
       this.shotTokens = shotTokens;
@@ -73,6 +91,10 @@ public class Scene extends Room{
    */
    public void removeSceneCard(){
       //remove it I guess, you heard the man
+   }
+   
+   public SceneCard getSceneCard(){
+      return sceneCard;
    }
    
 }

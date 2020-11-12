@@ -46,9 +46,14 @@ public class Player{
    public void setPlayerNum(int playerNum){
       this.playerNumber = playerNum;
    }
-
-   public void setRank(int pRank){
-      this.rank = pRank;
+   
+   public int getPlayerNumber(){
+      return this.playerNumber;
+   }
+   
+   //used at the start of the game if there are 7 or 8 players
+   public void setRank(int rank){
+      this.rank = rank;
    }
    
    /*
@@ -69,9 +74,17 @@ public class Player{
    public void setMoney(int pMoney){
       this.money = pMoney;
    }
-
-   public void setCredits(int pCredits){
-      this.credits = pCredits;
+   
+   public void addCredits(int credits){
+      this.credits += credits;
+   }
+   
+   public void addMoney(int money){
+      this.money += money;
+   }
+   
+   public void setCredits(int credits){
+      this.credits = credits;
    }
 
    public int getCredits(){
@@ -86,12 +99,11 @@ public class Player{
       return this.rank;
    }
 
-   public int getPlayerNumber(){
-      return this.playerNumber;
-   }
+   
    public void setPracticeTokens(int pTokens){
       this.practiceTokens = pTokens;
    }
+   
    public int getPracticeTokens(){
       return this.practiceTokens;
    }
@@ -101,11 +113,17 @@ public class Player{
       move(Room location)
       parameters: Room location
       returns: none
-      
+      precond: moving to destination is a valid in game move
+      post cond: player has moved to destination
       attempts to move player to the given Room
    */
-   public void move(Room location){
-      //move to a room
+   public void move(Room destination){
+      Room temp = currentRoom;
+      currentRoom = destination;
+      if(temp != null){
+         temp.removeOccupant(this);
+      }
+      currentRoom.addOccupant(this);
    }
    
    /*
