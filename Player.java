@@ -134,13 +134,12 @@ public class Player{
       attempts to purchase a certain rank, based on int given
    */
 
-   //logically so wrong
-   public void purchaseRank(int rank){
-      String failed = "Purchase failed";
+   //BREAK INTO 2 METHODS
+   public void purchaseRankCredits(int rank){
+      String failed = "Purchase failed, insufficient funds.";
       if(rank == 2){
-         if((getMoney() >= 4) || (getCredits() >= 5)){ //NEED TO ASK FOR CREDITS OR MONEY, MAYBE 2 SEPARATE METHODS? purhcaseRankCredits and purchaseRankMoney
-            setMoney(getMoney() - 4);
-            setCredits(getCredits() - 5);
+         if(this.credits >= 5){ 
+            setCredits(this.credits - 5);
             setRank(rank);
          }
          else{
@@ -148,9 +147,8 @@ public class Player{
          }
       }
       else if(rank == 3){
-         if((getMoney() >= 10) || (getCredits() >= 10)){
-            setMoney(getMoney() - 10);
-            setCredits(getCredits() - 10);
+         if(this.credits >= 10){
+            setCredits(this.credits - 10);
             setRank(rank);
          }
          else{
@@ -158,9 +156,8 @@ public class Player{
          }
       }
       else if(rank == 4){
-         if((getMoney() >= 18) || (getCredits() >= 15)){
-            setMoney(getMoney() - 18);
-            setCredits(getCredits() - 15);
+         if(this.credits >= 15){
+            setCredits(this.credits - 15);
             setRank(rank);
          }
          else{
@@ -168,9 +165,8 @@ public class Player{
          }
       }
       else if(rank == 5){
-         if((getMoney() >= 28) || (getCredits() >= 20)){
-            setMoney(getMoney() - 28);
-            setCredits(getCredits() - 20);
+         if(this.credits >= 20){
+            setCredits(this.credits - 20);
             setRank(rank);
          }
          else{
@@ -178,9 +174,60 @@ public class Player{
          }
       }
       else if(rank == 6){
-         if((getMoney() >= 40) || (getCredits() >= 25)){
-            setMoney(getMoney() - 40);
-            setCredits(getCredits() - 25);
+         if(this.credits >= 25){
+            setCredits(this.credits - 25);
+            setRank(rank);
+         }
+         else{
+            System.out.println(failed);
+         }
+      }
+      else{
+         System.out.println("Rank isn't offered");
+      }
+   }
+
+   public void purchaseRankMoney(int rank){
+      String failed = "Purchase failed, insufficient funds.";
+      if(rank == 2){
+         if(this.money >= 4){ 
+            setMoney(this.money - 4);
+            setRank(rank);
+         }
+         else{
+            System.out.println(failed);
+         }
+      }
+      else if(rank == 3){
+         if(this.money >= 10){
+            setMoney(this.money - 10);
+            setRank(rank);
+         }
+         else{
+            System.out.println(failed);
+         }
+      }
+      else if(rank == 4){
+         if(this.money >= 18){
+            setMoney(this.money - 18);
+            setRank(rank);
+         }
+         else{
+            System.out.println(failed);
+         }
+      }
+      else if(rank == 5){
+         if(this.money >= 28){
+            setMoney(this.money - 28);
+            setRank(rank);
+         }
+         else{
+            System.out.println(failed);
+         }
+      }
+      else if(rank == 6){
+         if(this.money >= 40){
+            setMoney(this.money - 40);
             setRank(rank);
          }
          else{
