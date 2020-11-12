@@ -248,17 +248,21 @@ public class Player{
    
    /*
       act(Scene scene)
-      returns: none
+      returns: boolean
       description: player attempts to act in a scene
       precond: Player must have a Role in a scene
       postcond: Player succeeds or fails in acting
       
    */
-   public void act(Scene scene){
+   public boolean act(Scene scene){
       Dice d = new Dice();
 
-      if((d.rollAct(this.practiceTokens) > scene.getSceneCard().getSceneBudget())){
+      if((d.rollAct(this.practiceTokens) >= scene.getSceneCard().getSceneBudget())){
          scene.setShotTokens(scene.getShotTokens() - 1);
+         return true;
+      }
+      else{
+         return false;
       }
    }
    
@@ -271,7 +275,7 @@ public class Player{
       postcondition: practiceTokens increases by 1
    */
    public void addPracticeToken(){
-      setPracticeTokens(getPracticeTokens() +1);
+      setPracticeTokens(this.practiceTokens +1);
    }
    
    /*
