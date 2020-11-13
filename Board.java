@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Stack;
 
 public class Board{
 
@@ -9,11 +10,21 @@ public class Board{
    private ArrayList<Scene> scenes; //needs to be changed, I can't make this work
    private ArrayList<Player> players;
    
+   private Stack<SceneCard> cardPile;
+   
    /* Board initializer */
-   public Board(){
+   public Board(ArrayList<SceneCard> cards){
       trailers = new Room();
       //castingOffice = new CastingOffice();
       rooms = new ArrayList<Room>();
+      this.cardPile = new Stack<SceneCard>();
+      
+      Collections.shuffle(cards);
+      
+      for(SceneCard s: cards){
+         this.cardPile.push(s);
+      }
+      players = new ArrayList<Player>();
    }
    
    /* Board initializer */
@@ -137,10 +148,12 @@ public class Board{
    */
    public void resetBoard(){
       //put all players in the trailers
-      for(Scene s: scenes){
-         
+      for(Room r : rooms){
+         if(!(r.getName().equals("Trailers") || r.getName().equals("Casting Office"))){
+            r.resetShotTokens();
+            r.addSceneCard(cardPile.pop());
+         }
       }
-      //reset tokens and replenish scene cards
    }
    
    /*
@@ -151,7 +164,15 @@ public class Board{
    This method checks to see if the day is over
    */
    public boolean isDayOver(){
-      //if only one scene remains, return true. otherwise, return false
-      return false; //temp
+      int remainingScenes = 0;
+      for(Room r: rooms){
+         if(r.getSceneCard() != null){
+            remainingScenes ++;
+         }
+      }
+      if(remainingScenes > 1){
+         return false;
+      }
+      return true;
    }
 }

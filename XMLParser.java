@@ -156,19 +156,13 @@ public class XMLParser{
                for(int k = 0; k < takes.getLength(); k++){
                   Node take = takes.item(k);
                   if(take.getNodeType() == Node.ELEMENT_NODE){
-                      
-                     int takeNumber = Integer.parseInt(take.getAttributes().getNamedItem("number").getNodeValue());
-                     
-                     //if the take in takes has a higher number than current shot tokens
-                     if(shotTokens < takeNumber){
-                        shotTokens = takeNumber;
-                     }
+                     shotTokens ++;
                   }
                   
                }
                
                //give set appropriate amount of shot tokens 
-               s.setShotTokens(shotTokens);
+               s.setMaxShotTokens(shotTokens);
             }
             
             else if(child.getNodeName().equals("parts")){
@@ -214,7 +208,7 @@ public class XMLParser{
       
       //add trailers to roomlist
       Trailers t = new Trailers();
-      t.setName("trailers"); // C H A N G E "trailers"
+      t.setName("trailer"); // C H A N G E "trailers"
       roomlist.add(t);
       
       //add casting office to roomlist
@@ -280,7 +274,7 @@ public class XMLParser{
          roomName = "office";
       }
       else{
-         roomName = "trailers";
+         roomName = "trailer";
       }
       
       Room thisRoom = new Room(); //blank, to be filled in later

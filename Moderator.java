@@ -91,6 +91,7 @@ public class Moderator{
       if(result < player.getCurrentRoom().getSceneCard().getSceneBudget()){
          return false;
       }
+      player.getCurrentRoom().setShotTokens(player.getCurrentRoom().getShotTokens() - 1);
       return true;
    }
    
@@ -109,9 +110,18 @@ public class Moderator{
    /*
       checkRole()
       checks if the player can get a role with given string as a name. Returns the Role if they can, returns null if they cannot
+      
+      
+      C H A N G E
    */
-   public Role checkRole(Player player, String s){
-      return player.getCurrentRoom().getRole(s);
+   public boolean checkRole(Player player, String s){
+      if(player.getCurrentRoom().getRole(s) == null){
+         return false;
+      }
+      if(player.getRank() < player.getCurrentRoom().getRole(s).getRank()){
+         return false;
+      }
+      return true;
    }
    
    private int tallyScore(){
@@ -127,6 +137,12 @@ public class Moderator{
    /*getter for maxDaysLeft, or how many days long the game is*/
    public int getMaxDaysLeft(){
       return maxDaysLeft;
+   }
+   
+   
+   /*getter for the current day*/
+   public int getDay(){
+      return maxDaysLeft - daysLeft + 1;
    }
    
    /*

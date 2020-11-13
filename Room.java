@@ -140,8 +140,34 @@ public class Room{
       return null;
    }
    
+   
    /*returns 0, because bare rooms do not have shot tokens*/
    public int getShotTokens(){
       return 0;
+   }
+   
+   /*Does nothing, since blank rooms do not have shot tokens*/
+   public void resetShotTokens(){
+      System.out.println("Tried to access shot tokens when there are none.");
+   }
+   
+   /*Does nothing, since blank rooms cannot have scene cards*/
+   public void addSceneCard(SceneCard s){
+      System.out.println("Tried to add scene card where no slot was present.");
+   }
+   
+   /*Returns 0, since bare rooms have no shot tokens*/
+   public int getMaxShotTokens(){
+      return 0;
+   }
+   
+   /*does nothing, bare rooms have no shot tokens*/
+   public void setShotTokens(int shotTokens){
+      System.out.println("You tried to set shot tokens when there are no places for any.");
+   }
+   
+   /*does nothing, bare scenes do not wrap up*/
+   public void removeSceneCard(){
+      System.out.println("You tried to remove the scene card when there was none.");
    }
 }

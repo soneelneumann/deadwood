@@ -1,3 +1,7 @@
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class Banker{
    
    /*initializer*/
@@ -42,8 +46,32 @@ public class Banker{
       precond: scene is being wrapped up
       postcond: player has been payed
    */
-   public int[] dispersePayout(Scene s, Role r){
+   public void dispersePayout(Room room){
       //
-      return new int[2];
+      Dice d = new Dice();
+      ArrayList<Integer> payoutVals = d.rollPayout(room.getSceneCard().getSceneBudget());
+      
+      ArrayList<Player> players = room.getOccupants();
+      
+      ArrayList<Role> roles = room.getSceneCard().getRoles();
+      ArrayList<Integer> ranks = new ArrayList<Integer>();
+      
+      for(Role r : roles){
+         ranks.add(r.getRank());
+      }
+      
+      Collections.sort(ranks);
+      Collections.reverse(ranks);
+      
+      //loop through roles and pay respective players
+      for(int i = 0; i < payoutVals.size(); i++){
+         int roleRank = ranks.get(i % ranks.size()); 
+         
+         for(Player p : players){
+            if(p.getCurrentRole().isOnCard() && p.getCurrentRole().getRank() == roleRank){
+               p.addMoney(payoutVals.get(i));
+            }
+         }
+      }
    }
 }

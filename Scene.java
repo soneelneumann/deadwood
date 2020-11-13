@@ -24,6 +24,7 @@ public class Scene extends Room{
    public Scene(int shotTokenMax){
       this.shotTokenMax = shotTokenMax;
       shotTokens = shotTokenMax;
+      roles = new ArrayList<Role>();
    }
    
    /*adds input role to roles*/
@@ -47,11 +48,25 @@ public class Scene extends Room{
       }
       return null;
    }
-
+   
+   /*getter for roles*/
+   public ArrayList<Role> getRoles(){
+      return new ArrayList<Role>(roles);
+   }
    
    /*setter for shot tokens*/
    public void setShotTokens(int shotTokens){
       this.shotTokens = shotTokens;
+   }
+   
+   /*getter for max shot tokens*/
+   public int getMaxShotTokens(){
+      return shotTokenMax;
+   }
+   
+   public void setMaxShotTokens(int shotTokenMax){
+      this.shotTokenMax = shotTokenMax;
+      shotTokens = shotTokenMax;
    }
    
    /*getter for shot tokens*/

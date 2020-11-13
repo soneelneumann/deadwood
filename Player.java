@@ -261,9 +261,7 @@ public class Player{
          scene.setShotTokens(scene.getShotTokens() - 1);
          return true;
       }
-      else{
-         return false;
-      }
+      return false;
    }
    
    
@@ -314,6 +312,7 @@ public class Player{
    */
    public void takeRole(Role r){
       setCurrentRole(r);
+      r.setIsTaken(true);
    }
    
 }

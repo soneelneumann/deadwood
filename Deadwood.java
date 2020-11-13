@@ -10,15 +10,18 @@ public class Deadwood{
    public static void main(String[] args) throws ParserConfigurationException{
 //       initialize board
       Scanner scan = new Scanner(System.in);
-      Board b = new Board();
+      
       
       XMLParser xml = new XMLParser();
+      ArrayList<SceneCard> cardPile = xml.getCards("cards.xml");
+      
+      Board b = new Board(cardPile);
       
       ArrayList<Room> roomList = xml.getRooms("board.xml");
       
       //set up the board
       for(Room r : roomList){
-         if(r.getName().equals("trailers")){
+         if(r.getName().equals("trailer")){
             r.setName("Trailers");
             b.setTrailers(r);
          }
@@ -27,7 +30,7 @@ public class Deadwood{
          }
       }
       b.setRoomList(roomList); //fill in roomlist for board
-      
+      b.resetBoard(); //initializes scene cards and shot tokens
       
       
       System.out.println("Welcome to Deadwood! \nPlease enter in the number of Players (2 to 8)");
@@ -96,15 +99,36 @@ public class Deadwood{
       //begin player turnOrder
       int currentTurn = 0;
       boolean continueGame = true; //boolean for if the game is still running
-      
+      boolean continueDay = true;
       while(continueGame){
-         for(int i = 0; i < players.length; i++){
-            String[] availableActions = getAvailableActions(players[i]);
-            System.out.println("It is now Player " + players[i].getPlayerNumber() + "'s turn.");
-            
+         
+         System.out.println("It is currently day " + moderator.getDay());
+         System.out.println("All Players start in the Trailers.");
+         
+         while(continueDay){
+            for(int i = 0; i < players.length; i++){
+               String[] availableActions = getAvailableActions(players[i]);
+               System.out.println("It is now Player " + players[i].getPlayerNumber() + "'s turn.");
+               parseTurn(moderator, b, players[i], scan, availableActions); //run through the player's turn
+               if(b.isDayOver()){
+                  
+                  moderator.removeDay();
+                  b.clearBoard();
+                  b.resetBoard();
+                  
+                  break;
+               }
+            }
+         }
+         if(moderator.checkGameOver()){
+            continueGame = false;
+            break;
          }
       }
       
+      
+      System.out.println("Game ends and someone wins.");
+      //End the game here
       
 //       put Players in the trailers
 //       display tutorial text 
@@ -143,19 +167,25 @@ public class Deadwood{
       
       if(!actionList.contains(command)){
          System.out.println("oops! looks like you typed something other than the avilable commands");
+         if(scan.hasNextLine()){
+            String temp = scan.nextLine(); //remove any other characters the player may have typed
+         }
          parseTurn(moderator, board, player, scan, availableActions);
       }
       else{
          switch(command){
          case "end":
-            System.out.print("Player " + player.getPlayerNumber() + "'s turn is over.");
+            System.out.println("Player " + player.getPlayerNumber() + "'s turn is over.");
             break;
             
          case "role":
-            String roleWanted = scan.next();
+            String read = scan.nextLine();
+            String roleWanted = read.substring(1, read.length()); //remove white space in front
             
-            if(moderator.checkRole(player, roleWanted) != null){
-               Role role = moderator.checkRole(player, roleWanted);
+            //if the wanted role exists in the room the player is in
+            if(moderator.checkRole(player, roleWanted)){
+               //get the role they want
+               Role role = player.getCurrentRoom().getRole(roleWanted);
                player.takeRole(role);
                String[] newAvailableActions = new String[]{"end"};
                parseTurn(moderator, board, player, scan, newAvailableActions);
@@ -167,10 +197,19 @@ public class Deadwood{
             break;
             
          case "move":
-            String destination = scan.next();
+            String destination = ""; //blank, to be filled in later. 
+            read = scan.nextLine();
+            if(!read.equals("")){
+               destination = read.substring(1, read.length());
+            }
+            else{
+               System.out.println("You need to enter in a room name after move.");
+               parseTurn(moderator, board, player, scan, availableActions); 
+               break;
+            }
             if(moderator.checkMove(player.getCurrentRoom(), destination)){
                player.move(board.getRoom(destination));
-               
+               System.out.println("You have now moved to " + destination + ".");
                String[] newAvailableActions = new String[]{"role", "where", "day", "rank", "stats", "end"};
                parseTurn(moderator, board, player, scan, newAvailableActions);
             }
@@ -214,20 +253,38 @@ public class Deadwood{
             if(success){
                System.out.println("Nice going! You've succeeded.");
                if(player.getCurrentRole().isOnCard()){
+                  b.disperseRewards(player, success);
                   System.out.println("Rewards: 2 credits");
                }
                else{
+                  b.disperseRewards(player, success);
                   System.out.println("Rewards: 1 credit, 1 dollar");
                }
+               System.out.println("Takes left: " + player.getCurrentRoom().getShotTokens());
                
+               if(player.getCurrentRoom().getShotTokens() == 0){
+                  //end the scene
+                  b.dispersePayout(player.getCurrentRoom());
+                  for(Player p : player.getCurrentRoom().getOccupants()){
+                     p.setCurrentRole(null);
+                  }
+                  
+                  player.getCurrentRoom().removeSceneCard();
+                  //scene is now wrapped
+                  
+                  System.out.println("That's a wrap! The scene card is removed and players in the room are removed from their roles.");
+               }
+
             }
             else{
                System.out.println("Drat! You failed.");
                if(!(player.getCurrentRole().isOnCard())){
                   System.out.println("Rewards: 1 dollar");
                }
+               b.disperseRewards(player, success);
+               System.out.println("Takes left: " + player.getCurrentRoom().getShotTokens());
             }
-            b.disperseRewards(player, success);
+            
             
             newAvailableActions = new String[]{"end"}; //weird error here made me not declare this
             parseTurn(moderator, board, player, scan, newAvailableActions);
@@ -256,7 +313,7 @@ public class Deadwood{
             
          case "stats":
             if(player.getCurrentRole() == null){
-               System.out.println("Your stats:");
+               System.out.println("Your stats: ");
                System.out.println("\tRank: " + player.getRank());
                System.out.println("\tMoney: " + player.getMoney());
                System.out.println("\tCredits: " + player.getCredits());
@@ -264,7 +321,7 @@ public class Deadwood{
             else{
                System.out.println("Your stats:");
                System.out.println("\tPractice Tokens: " + player.getPracticeTokens());
-               System.out.println("\tScene shot tokens: " + player.getCurrentRoom().getShotTokens());
+               //System.out.println("\tScene shot tokens: " + player.getCurrentRoom().getShotTokens());
             }
             
             parseTurn(moderator, board, player, scan, availableActions);
@@ -291,10 +348,10 @@ public class Deadwood{
    /*returns a set of available actions for a player at the start of turn*/
    public static String[] getAvailableActions(Player player){
       if(player.getCurrentRole() == null){
-         String[] availableActions = {"move", "role", "rank", "where", "end", "day"};
+         String[] availableActions = {"move", "role", "rank", "where", "end", "day", "stats"};
          return availableActions;
       }
-      String[] availableActions = {"act, rehearse, where, end, day"};
+      String[] availableActions = {"act", "rehearse", "where", "end", "day", "stats"};
       return availableActions;
    }
    
@@ -334,25 +391,68 @@ public class Deadwood{
       else{
          if(r.getSceneCard() != null){
             System.out.println("Scene in this room: " + r.getSceneCard().sceneName);
-            System.out.println("\n\"+" + r.getSceneCard().getSceneText() + "\"");
+            System.out.println(r.getSceneCard().getSceneText());
+            System.out.println("Scene Budget: " + r.getSceneCard().getSceneBudget());
+            System.out.println("Takes Left: " + r.getShotTokens());
+            System.out.println("Roles:");
+            System.out.println("\tOn Scene Card:");
+            for(Role displayRole : r.getSceneCard().getRoles()){
+               if(displayRole.getIsTaken()){
+                  System.out.println("\t\t" + displayRole.name + " [Rank " + displayRole.getRank() + "]" + " <Taken>");
+               }
+               else{
+                  System.out.println("\t\t" + displayRole.name + " [Rank " + displayRole.getRank() + "]" + " <Available>");
+               } 
+            }
+            System.out.println("\tOff Scene Card:");
+            for(Role displayRole : r.getRoles()){
+               if(displayRole.getIsTaken()){
+                  System.out.println("\t\t" + displayRole.name + " [Rank " + displayRole.getRank() + "]" + " <Taken>");
+               }
+               else{
+                  System.out.println("\t\t" + displayRole.name + " [Rank " + displayRole.getRank() + "]" + " <Available>");
+               } 
+            }
+            
          }
          else{
-            System.out.println("the scene in this room is currently wrapped.");
+            System.out.println("The scene in this room is currently wrapped.");
          }
       }
-      
-      System.out.println();
+
       System.out.println("Neighbors: ");
       for(Room n : r.getNeighbors()){
          if(n.getName().equals("Casting Office") || n.getName().equals("Trailers")){
-            System.out.println(n.getName());
+            System.out.println("\t" + n.getName());
          }
          else{
             if(n.getSceneCard() == null){
-               System.out.println(n.getName() + " <wrapped>");
+               System.out.println("\t" + n.getName() + " <wrapped>");
             }
             else{
-               System.out.println(n.getName() + " " + "<scene available>");
+               System.out.println("\t" + n.getName() + " " + "<scene available>");
+               System.out.println("\tScene Budget: " + n.getSceneCard().getSceneBudget());
+               System.out.println("\tTakes Left: " + n.getShotTokens());
+               System.out.println("\tRoles:");
+               System.out.println("\t\tOn Scene Card:");
+               for(Role displayRole : n.getSceneCard().getRoles()){
+                  if(displayRole.getIsTaken()){
+                     System.out.println("\t\t\t" + displayRole.name + " [Rank " + displayRole.getRank() + "]" + " <Taken>");
+                  }
+                  else{
+                     System.out.println("\t\t\t" + displayRole.name + " [Rank " + displayRole.getRank() + "]" + " <Available>");
+                  }
+                  
+               }
+               System.out.println("\t\tOff Scene Card:");
+               for(Role displayRole : n.getRoles()){
+                  if(displayRole.getIsTaken()){
+                     System.out.println("\t\t\t" + displayRole.name + " [Rank " + displayRole.getRank() + "]" + " <Taken>");
+                  }
+                  else{
+                     System.out.println("\t\t\t" + displayRole.name + " [Rank " + displayRole.getRank() + "]" + " <Available>");
+                  }
+               }
             }
          }
       }

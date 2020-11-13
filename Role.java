@@ -53,6 +53,11 @@ public class Role{
       return isTaken;
    }
    
+   /*setter for isTaken*/
+   public void setIsTaken(boolean isTaken){
+      this.isTaken = isTaken;
+   }
+   
    /*
    getLine()
    returns: String
