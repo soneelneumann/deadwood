@@ -139,4 +139,9 @@ public class Room{
    public SceneCard getSceneCard(){
       return null;
    }
+   
+   /*returns 0, because bare rooms do not have shot tokens*/
+   public int getShotTokens(){
+      return 0;
+   }
 }
