@@ -78,7 +78,7 @@ public class Scene extends Room{
       postcond: scene card is added
    */
    public void addSceneCard(SceneCard s){
-      //stuff
+      this.sceneCard = s;
    }
    
    /*
@@ -90,7 +90,7 @@ public class Scene extends Room{
       postcond: scene card is removed if necessary
    */
    public void removeSceneCard(){
-      //remove it I guess, you heard the man
+      this.sceneCard = null;
    }
    
    public SceneCard getSceneCard(){
