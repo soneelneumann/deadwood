@@ -1,5 +1,6 @@
 import java.util.Random;
 import java.util.ArrayList;
+import java.util.Collections;
 public class Dice{
 
    //random object used to make dice rolls
@@ -18,7 +19,13 @@ public class Dice{
       postcond: payout is calculated correctly and is in order from highest roll to lowest
    */
    public ArrayList<Integer> rollPayout(int budget){
-      return new ArrayList<Integer>(); //temp
+      ArrayList<Integer> payout = new ArrayList<Integer>();
+      for(int i = 0; i < budget; i++){
+         payout.add(rand.nextInt(6) + 1);
+      }
+      Collections.sort(payout);
+      Collections.reverse(payout);
+      return payout;
    }
    
    /*
@@ -29,7 +36,7 @@ public class Dice{
       postcond: acting roll is returned
    */
    public int rollAct(int bonus){
-      int roll = (int)(Math.random()*6) + 1;
+      int roll = rand.nextInt(6) + 1;
       roll += bonus;
       return roll;
    }
