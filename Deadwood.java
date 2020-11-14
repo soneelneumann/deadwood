@@ -56,7 +56,7 @@ public class Deadwood{
       
       //modify starting conditions based on number of players
       if(players.length < 4){
-         numberOfDays = 3;
+         numberOfDays = 3;  
       }
       else if(players.length == 5){
          for(int i = 0; i < players.length; i++){
@@ -102,8 +102,7 @@ public class Deadwood{
       boolean continueDay = true;
       while(continueGame){
          
-         System.out.println("It is currently day " + moderator.getDay());
-         System.out.println("All Players start in the Trailers.");
+         
          
          while(continueDay){
             for(int i = 0; i < players.length; i++){
@@ -113,11 +112,21 @@ public class Deadwood{
                if(b.isDayOver()){
                   
                   moderator.removeDay();
-                  b.clearBoard();
-                  b.resetBoard();
-                  
+
                   break;
                }
+            }
+            if(b.isDayOver()){
+               
+               if(moderator.getDay() <= moderator.getMaxDaysLeft()){
+                  System.out.println("It is currently day " + moderator.getDay());
+                  System.out.println("All Players start in the Trailers.");
+               }
+               
+                  
+               b.clearBoard();
+               b.resetBoard();
+               break;
             }
          }
          if(moderator.checkGameOver()){
@@ -126,36 +135,13 @@ public class Deadwood{
          }
       }
       
+      //display each player's score
+      System.out.println("Final score:");
+      for(Player player : players){
+         System.out.println("\tPlayer " + player.getPlayerNumber() + "'s score: " + moderator.tallyScore(player));
+      }
       
-      System.out.println("Game ends and someone wins.");
-      //End the game here
-      
-//       put Players in the trailers
-//       display tutorial text 
-         //potential actions:
-         //move <roomname> : moves to room
-         //role <rolename> : take a role in a scene
-         //where : displays current room and relevant info
-            //shows name of the room you're in 
-            //shows neighbors
-            //in scene, shows roles and if they're taken
-            //in office, shows credit and money prices
-            //in trailer, shows "you'll start here each day."
-         //rank <ranknumber> <money/credits> 
-         //act : act in a scene you're in
-         //rehearse : rehearse for a scene you're in
-         //end : ends turn
-         //day : displays current day
-//       
-//       boolean continueGame = true;
-//       currentTurn = 0; <- used to cycle through turnOrder
-//       while(continueGame) <- continue is set to false on end of game
-            //continueTurn = true; //false when turn is done
-            //announce whose turn it is
-            //display their current situation
-            //take in player command
-            //do corresponding action to command
-            //depending on action, end turn
+      System.out.println("Game Over.");
    }
    
    /*runs through a player's turn*/
@@ -227,17 +213,32 @@ public class Deadwood{
                   System.out.println("Please enter in \"credits\" or \"money\" after the rank you would like.");
                }
                else if(moderator.checkRankUp(player, rankRequested, currencyType)){
-                  //player.rankUp()
-                  System.out.println("You now are now rank " + player.getRank());
+                  if(currencyType.equals("credits")){
+                     player.purchaseRankCredits(rankRequested);
+                  }
+                  else{
+                     player.purchaseRankMoney(rankRequested);
+                  }
+                  System.out.println("You are now rank " + player.getRank());
                   System.out.println("You now have " + player.getMoney() + " dollars and " + player.getCredits() + " credits.");
+               }
+               else{
+                  parseTurn(moderator, board, player, scan, availableActions);
+                  break;
                }
             }
             catch(Exception numberFormatException){
                System.out.println("Looks like you didn't input just a number after \"rank\". Make sure you type \"rank <number>\".");
                parseTurn(moderator, board, player, scan, availableActions);
             }
-            
-            String[] newAvailableActions = new String[]{"move", "where", "role", "day", "stats", "end"};
+            String[] newAvailableActions = new String[availableActions.length - 1];
+            ArrayList<String> newActionsList = new ArrayList<String>(); //temporary list, to be converted to array for newAvailableActions
+            for(int i = 0; i < availableActions.length; i++){
+               if(!(availableActions[i].equals("rank"))){
+                  newActionsList.add(availableActions[i]);
+               }
+            }
+            newActionsList.toArray(newAvailableActions); //store the list values back into our array
             parseTurn(moderator, board, player, scan, newAvailableActions);
             break;
             
@@ -265,8 +266,9 @@ public class Deadwood{
                if(player.getCurrentRoom().getShotTokens() == 0){
                   //end the scene
                   b.dispersePayout(player.getCurrentRoom());
-                  for(Player p : player.getCurrentRoom().getOccupants()){
-                     p.setCurrentRole(null);
+                  for(Player playerInScene : player.getCurrentRoom().getOccupants()){
+                     playerInScene.setCurrentRole(null);
+                     playerInScene.removePracticeTokens();
                   }
                   
                   player.getCurrentRoom().removeSceneCard();
@@ -382,7 +384,7 @@ public class Deadwood{
          int[] prices_money = r.getRankMoneyPrices();
          int[] prices_credits = r.getRankCreditPrices();
          for(int i = 0; i < prices_money.length; i++){
-            System.out.println("Rank: " + (i+2) + prices_money[i] + " dollars, " + prices_credits[i] + " credits");
+            System.out.println("Rank " + (i+2) + ": " + prices_money[i] + " dollars, " + prices_credits[i] + " credits");
          }
       }
       if(r.getName().equals("Trailers")){

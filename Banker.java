@@ -68,10 +68,22 @@ public class Banker{
          int roleRank = ranks.get(i % ranks.size()); 
          
          for(Player p : players){
-            if(p.getCurrentRole().isOnCard() && p.getCurrentRole().getRank() == roleRank){
-               p.addMoney(payoutVals.get(i));
+            if(p.getCurrentRole() != null){
+               if(p.getCurrentRole().isOnCard() && p.getCurrentRole().getRank() == roleRank){
+                  p.addMoney(payoutVals.get(i));
+               }
+            }
+            
+               
+         }
+      }
+      for(Player p : players){
+         if(p.getCurrentRole() != null){
+            if(!(p.getCurrentRole().isOnCard())){
+               p.addMoney(p.getCurrentRole().getRank());
             }
          }
+         
       }
    }
 }

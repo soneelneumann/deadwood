@@ -131,11 +131,11 @@ public class Board{
    */
    public void clearBoard(){
       //clear the board
-      for(Scene s: scenes){
+      for(Room r: rooms){
          //clear all tokens
-         s.setShotTokens(0); //remove all shot tokens
+         r.setShotTokens(0); //remove all shot tokens
          //clear scene card
-         s.removeSceneCard();
+         r.removeSceneCard();
       }
    }
    
@@ -152,6 +152,13 @@ public class Board{
          if(!(r.getName().equals("Trailers") || r.getName().equals("Casting Office"))){
             r.resetShotTokens();
             r.addSceneCard(cardPile.pop());
+            for(Role role : r.getRoles()){
+               role.setIsTaken(false);
+            }
+         }
+         for(Player player : r.getOccupants()){
+            player.move(trailers);
+            player.setCurrentRole(null);
          }
       }
    }

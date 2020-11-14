@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.List;
 public class Moderator{
    
    private int daysLeft;
@@ -41,7 +42,7 @@ public class Moderator{
          String currencyType, either "c" or "m" for credits or money
       returns: boolean, true if player can purchase, false otherwise
       
-      precond: currently player's turn, currencyType == "c" or "m"
+      precond: currently player's turn, currencyType == "credits" or "money"
       postcond: validity of request is returned
    */
    public boolean checkRankUp(Player player, int rankRequested, String currencyType){
@@ -50,7 +51,7 @@ public class Moderator{
             System.out.println("Your rank is too low");
             return false;
       }
-      if(currencyType.equals("c")){
+      if(currencyType.equals("credits")){
          
          if(player.getCurrentRoom().getRankCreditPrices() == null){
             System.out.println("You can only purchase a rank in the casting office.");
@@ -124,14 +125,27 @@ public class Moderator{
       return true;
    }
    
-   private int tallyScore(){
-      //
-      return -1; //temp
+   /*tallies the final score for the passed in Player*/
+   public int tallyScore(Player player){
+      return (player.getRank() * 5) + player.getMoney() + player.getCredits();
    }
    
-   public Player declareWinner(){
-      //
-      return new Player(); //temp
+   public ArrayList<Player> declareWinner(List<Player> players){
+      int highScore = 0;
+      //player we will declare as the winner, empty for now
+      ArrayList<Player> winningPlayers = new ArrayList<Player>(); 
+      for(Player player : players){
+         int playerScore = (player.getRank() * 5) + player.getCredits() + player.getMoney();
+         if(playerScore > highScore){
+            winningPlayers.clear();
+            winningPlayers.add(player);
+         }
+         if(playerScore == highScore){
+            winningPlayers.add(player);
+         }
+      }
+      
+      return winningPlayers; 
    }
    
    /*getter for maxDaysLeft, or how many days long the game is*/

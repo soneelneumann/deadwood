@@ -163,11 +163,11 @@ public class Room{
    
    /*does nothing, bare rooms have no shot tokens*/
    public void setShotTokens(int shotTokens){
-      System.out.println("You tried to set shot tokens when there are no places for any.");
+      //System.out.println("You tried to set shot tokens when there are no places for any.");
    }
    
    /*does nothing, bare scenes do not wrap up*/
    public void removeSceneCard(){
-      System.out.println("You tried to remove the scene card when there was none.");
+      //System.out.println("You tried to remove the scene card when there was none.");
    }
 }
