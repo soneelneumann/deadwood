@@ -1,3 +1,8 @@
+/*
+Soneel Neumann and Chris Brown
+Player class, keeps track of players' rank, credits, number, money, practice tokens, role, and room they're in
+*/
+
 import java.util.Scanner;
 
 public class Player{
@@ -30,12 +35,12 @@ public class Player{
       //make everything default values
    }
    
-   /*Player initializer, given player's name*/
+   /*Player initializer, given player's num*/
    public Player(int playerNumber){
       this.playerNumber = playerNumber;
    }
    
-   /*Player initializer, given player's name, their money and their credits*/
+   /*Player initializer, given player's num, their money and their credits, and rank*/
    public Player(int playerNumber, int money, int credits, int rank){
       this.playerNumber = playerNumber;
       this.money = money;
@@ -43,67 +48,78 @@ public class Player{
       this.rank = rank;
    }
 
+   /* setter for player's number */
    public void setPlayerNum(int playerNum){
       this.playerNumber = playerNum;
    }
    
+   /* getter for player's number */
    public int getPlayerNumber(){
       return this.playerNumber;
    }
    
+   /* setter for player's rank */
    //used at the start of the game if there are 7 or 8 players
    public void setRank(int rank){
       this.rank = rank;
    }
    
-   /*
-   getter for the currentRoom
-   */
+   /* getter for player's current room */
    public Room getCurrentRoom(){
       return currentRoom;
    }
    
+   /* getter for player's current role */
    public Role getCurrentRole(){
       return currentRole;
    }
    
+   /* setter for player's current role */
    public void setCurrentRole(Role currentRole){
       this.currentRole = currentRole;
    }
    
+    /* setter for player's current money */
    public void setMoney(int pMoney){
       this.money = pMoney;
    }
    
+    /* adds credits to player */
    public void addCredits(int credits){
       this.credits += credits;
    }
    
+   /* adds money to player */
    public void addMoney(int money){
       this.money += money;
    }
    
+   /* setter for player's credits */
    public void setCredits(int credits){
       this.credits = credits;
    }
 
+   /* getter for player's credits */
    public int getCredits(){
       return this.credits;
    }
 
+   /* getter for player's money */
    public int getMoney(){
       return this.money;
    }
 
+   /* getter for player's rank */
    public int getRank(){
       return this.rank;
    }
 
-   
+   /* setter for player's practice tokens */
    public void setPracticeTokens(int pTokens){
       this.practiceTokens = pTokens;
    }
    
+   /* getter for player's practice tokens */
    public int getPracticeTokens(){
       return this.practiceTokens;
    }
@@ -114,7 +130,6 @@ public class Player{
       parameters: Room location
       returns: none
       precond: moving to destination is a valid in game move
-      post cond: player has moved to destination
       attempts to move player to the given Room
    */
    public void move(Room destination){
@@ -130,7 +145,6 @@ public class Player{
       purchaseRankCredits(int rank)
       parameters: int rank
       returns: none
-      
       attempts to purchase a certain rank with credits, based on int given
    */
 
@@ -190,7 +204,6 @@ public class Player{
       purchaseRankCredits(int rank)
       parameters: int rank
       returns: none
-      
       attempts to purchase a certain rank with money, based on int given
    */
 
@@ -249,10 +262,8 @@ public class Player{
    /*
       act(Scene scene)
       returns: boolean
-      description: player attempts to act in a scene
       precond: Player must have a Role in a scene
-      postcond: Player succeeds or fails in acting
-      
+      description: player attempts to act in a scene
    */
    public boolean act(Scene scene){
       Dice d = new Dice();
@@ -268,9 +279,8 @@ public class Player{
    /*
       addPracticeToken()
       returns: none
-      description: adds a Practice Token to the player's total tokens
       precondition: player must have a Role in a scene
-      postcondition: practiceTokens increases by 1
+      description: adds a Practice Token to the player's total tokens
    */
    public void addPracticeToken(){
       setPracticeTokens(this.practiceTokens +1);
@@ -279,9 +289,8 @@ public class Player{
    /*
       rehearse()
       returns: none
-      description: player attempts to rehearse in a scene
       precondition: 
-      postcondition: player either gets a shot token or is forced to act
+      description: player attempts to rehearse in a scene
    */
    public void rehearse(Scene scene, SceneCard sceneCard){
          if(this.practiceTokens == sceneCard.getSceneBudget()){
@@ -295,9 +304,8 @@ public class Player{
    /*
       removePracticeTokens()
       returns: none
-      description: player is removed of all practice tokens
       precondition: player has 1 or more practice tokens 
-      postcondition: all practice tokens are removed
+      description: player is removed of all practice tokens
    */
    public void removePracticeTokens(){
       this.practiceTokens = 0;
@@ -306,9 +314,8 @@ public class Player{
    /*
       takeRole()
       returns: 
-      description: player attempts to take a role in a scene
       precondition: it is this player's turn
-      postcondition: player has new role
+      description: player attempts to take a role in a scene
    */
    public void takeRole(Role r){
       setCurrentRole(r);
