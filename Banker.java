@@ -1,3 +1,8 @@
+/*
+Soneel Neumann and Chris Brown
+Banker class, responsible for the transactions of payout and rewards to the players
+*/
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -6,7 +11,7 @@ public class Banker{
    
    /*initializer*/
    public Banker(){
-      
+      //
    }
    
    /*
@@ -15,6 +20,8 @@ public class Banker{
          Player p, player who finished acting
          Role r, role the player was acting in
          bool success, true if player succeeded acting, false otherwise
+      precond: player attempted act   
+      Disperses rewards based on players success or failure of acting   
    */
    public void disperseRewards(Player player, boolean success){
       if(success){
@@ -41,13 +48,11 @@ public class Banker{
       params: 
          Scene s, scene we're paying out for
          Role r, role the player has
-      description: pays player for role as scene ends
-      returns: int, amount to add to player's money
       precond: scene is being wrapped up
-      postcond: player has been payed
+      description: pays player for role as scene ends
    */
    public void dispersePayout(Room room){
-      //
+      
       Dice d = new Dice();
       ArrayList<Integer> payoutVals = d.rollPayout(room.getSceneCard().getSceneBudget());
       
