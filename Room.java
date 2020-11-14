@@ -1,3 +1,9 @@
+/*
+Chris Brown, Soneel Neumann
+
+Base Room class for all rooms on the Deadwood board. Not instantiated, but forms the framework for responsibilities.
+*/
+
 import java.util.ArrayList;
 public class Room{
    
@@ -16,19 +22,8 @@ public class Room{
    }
    
    
-   /*toString method, used in printing for tests mostly*/
+   /* toString method, used in printing for tests mostly */
    public String toString(){
-      /*
-      String output = "";
-      
-      output += ("Name: " + roomName);
-      output += ("Neighbors: \n");
-      for(Room r: neighbors){
-         output += (r.roomName + "\n");
-      }
-      
-      return output;
-      */
       
       return roomName;
    }
@@ -45,14 +40,15 @@ public class Room{
    }
    
    /*
-      addNeighbor()
-      params: Room r, room we're adding
-      returns: none
-      precond:
-      postcond: room is added as a neighbor
+   addNeighbor()
+   params: 
+      room: room we're adding
+   returns: none
+   precond: room is not already a neighbor
+   Adds a room as a neighbor
    */
-   public void addNeighbor(Room r){
-      neighbors.add(r);
+   public void addNeighbor(Room room){
+      neighbors.add(room);
    }
    
    /*getter for the room name*/
@@ -66,33 +62,34 @@ public class Room{
    }
    
    /*
-      addOcupant()
-      params: Player p, player we're adding
-      returns: none
-      precond: player is not currently in room
-      postcond: player is added to occupants
+   addOccupant(Player player)
+   params: 
+      player: player we're adding
+   returns: none
+   precond: player is not currently in room
+   adds player to the list of occupants
    */
-   public void addOccupant(Player p){
-      occupants.add(p);
+   public void addOccupant(Player player){
+      occupants.add(player);
    }
    
    /*
-      removeOccupant()
-      params: Player p, player we're removing
-      returns: none
-      precond: player is in this room
-      postcond: player is removed from occupants
+   removeOccupant(Player player)
+   params: 
+      p: player we're removing
+   returns: none
+   precond: player is in this room
+   removes a player from occupants
    */
-   public void removeOccupant(Player p){
-      occupants.remove(p);
+   public void removeOccupant(Player player){
+      occupants.remove(player);
    }
    
    /* 
    getOccupants()
-   Returns: ArrayList
-   Precondition: There are player(s) in a room
-   Postcondition: The player(s) are identified and returned
-   This method identifies all the players that are in the room
+   returns: ArrayList
+   precondition: There are player(s) in a room
+   identifies all the players that are in the room
    */
    public ArrayList<Player> getOccupants(){
       //return shallow copy of occupants
@@ -101,19 +98,21 @@ public class Room{
    
    
    /* 
-   isPlayerHere()
-   params: Player p, player we are looking for
-   Returns: boolean
-   Precondtion: the board needs to keep track of the player's position
-   Postcondtion: the players position is found
-   This method checks where the player's postion is, as in, what room they are in
+   isPlayerHere(Player player)
+   params: 
+      p: player we are looking for
+   returns: boolean
+   precondtion: the board needs to keep track of the player's position
+   returns true if player is in occupants, returns false otherwise
    */
-   public boolean isPlayerHere(Player p){
-      if(occupants.contains(p)){
+   public boolean isPlayerHere(Player player){
+      if(occupants.contains(player)){
          return true;
       }
       return false; 
    }
+   
+   //The rest of these are base methods, to solve class inheritance conflicts
    
    /*returns null, since bare rooms have no roles*/
    public Role getRole(String s){

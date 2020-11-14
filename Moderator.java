@@ -1,3 +1,9 @@
+/*
+Soneel Neumann, Chris Brown
+
+Moderator class for Deadwood. Controls the checking of player actions and verifies when the day is over.
+*/
+
 import java.util.ArrayList;
 import java.util.List;
 public class Moderator{
@@ -14,11 +20,11 @@ public class Moderator{
    
    
    /*
-      checkMove()
+      checkMove(Room start, String dest)
       params:
-         Room start: room player starts in
-         Room dest: room they are moving to
-      returns: boolean- true if valid move
+         start: room player starts in
+         dest: room they are moving to
+      returns: boolean- true if valid move, false otherwise
       precond: it is currently player's turn, 
          and they are about to move but haven't yet
       postcond: move is checked for legality
@@ -34,12 +40,11 @@ public class Moderator{
    }
    
    /*
-      checkRankUp()
-      
+      checkRankUp(Player player, int rankRequested, String currencyType)
       params:
-         Player p, player requesting rank
-         int rankRequested, rank they wish to purhcase
-         String currencyType, either "c" or "m" for credits or money
+         p: player requesting rank
+         rankRequested: rank they wish to purhcase
+         currencyType: either "c" or "m" for credits or money
       returns: boolean, true if player can purchase, false otherwise
       
       precond: currently player's turn, currencyType == "credits" or "money"
@@ -77,10 +82,10 @@ public class Moderator{
    }
    
    /*
-      checkAct()
-      params: Player p, who 
+      checkAct(Player player)
+      params: 
+         p: 
       returns: boolean
-      
       checks if the player is succesful in acting in their scene
    */
    public boolean checkAct(Player player){
@@ -97,9 +102,13 @@ public class Moderator{
    }
    
    /*
-   checkRehearse()
-   checks whether or not player can rehearse. true if yes, false if no.
+   checkRehearse(Player player)
+   returns: boolean
+   parameters:
+      player: player trying to rehearse for a scene
    precond: player is in a role
+   checks whether or not player can rehearse. true if yes, returns true if yes, false otherwise
+   
    */
    public boolean checkRehearse(Player player){
       if(player.getPracticeTokens() >= player.getCurrentRoom().getSceneCard().getSceneBudget() - 1){
@@ -109,11 +118,12 @@ public class Moderator{
    }
    
    /*
-      checkRole()
-      checks if the player can get a role with given string as a name. Returns the Role if they can, returns null if they cannot
-      
-      
-      C H A N G E
+   checkRole(Player player, String s)
+   returns: boolean
+   parameters:
+      player: player trying to take a role
+      s: the name of the role they are trying to take
+   checks if the player can take a certain role in a scene. returns true if yes, false otherwise
    */
    public boolean checkRole(Player player, String s){
       if(player.getCurrentRoom().getRole(s) == null){
@@ -125,27 +135,15 @@ public class Moderator{
       return true;
    }
    
-   /*tallies the final score for the passed in Player*/
+   /*
+   tallyScore(Player player)
+   returns : int
+   parameters:
+      player: player we are tallying the score for
+   tallies the score for a given player
+   */
    public int tallyScore(Player player){
       return (player.getRank() * 5) + player.getMoney() + player.getCredits();
-   }
-   
-   public ArrayList<Player> declareWinner(List<Player> players){
-      int highScore = 0;
-      //player we will declare as the winner, empty for now
-      ArrayList<Player> winningPlayers = new ArrayList<Player>(); 
-      for(Player player : players){
-         int playerScore = (player.getRank() * 5) + player.getCredits() + player.getMoney();
-         if(playerScore > highScore){
-            winningPlayers.clear();
-            winningPlayers.add(player);
-         }
-         if(playerScore == highScore){
-            winningPlayers.add(player);
-         }
-      }
-      
-      return winningPlayers; 
    }
    
    /*getter for maxDaysLeft, or how many days long the game is*/
@@ -161,9 +159,9 @@ public class Moderator{
    
    /*
    removeDay()
-   returns:
+   returns: none
    precond: daysLeft != 0
-   postcond: daysLeft is 1 less
+   removes 1 day from daysLeft
    */
    public void removeDay(){
       daysLeft -= 1;
@@ -172,11 +170,11 @@ public class Moderator{
    
    
    /*
-      checkGameOver()
-      params: none
-      returns: boolean- tru is game is over
-      precond: day is over
-      postcond: returns if the gaem is over
+   checkGameOver()
+   params: none
+   returns: boolean- tru is game is over
+   precond: day is over
+   returns true if the game is over
    */
    public boolean checkGameOver(){
       if(daysLeft == 0){

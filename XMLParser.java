@@ -1,3 +1,10 @@
+/*
+Chris Brown, Soneel Neumann
+
+Parses XML documents for game information, specifically about the Board and Scene Cards. 
+   Used at the start of the game during initialization.
+*/
+
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
@@ -12,19 +19,18 @@ import java.util.TreeMap;
 
 public class XMLParser{
    
-   /*Loader initializer*/
-   public XMLParser(String fileName) throws ParserConfigurationException{
-      //get a document from xml file with name fileName
-      Document doc = getDocFromFile(fileName);
-      
-   }
    
+   /*XMLParser Initializer*/
    public XMLParser(){
-      //do stuff
+      //nothing to do here yet
    }
    
    /*
-      gets card data from file 
+   getCards(String filename)
+   returns: ArrayList<SceneCard>
+   parameters:
+      filename: name of the xml file we want information from
+   precond: filename.xml must be full of properly formatted card data and in the same directory.
    */
    public ArrayList<SceneCard> getCards(String filename) throws ParserConfigurationException{
       Document doc = getDocFromFile(filename);
@@ -32,11 +38,12 @@ public class XMLParser{
    }
    
    /*
-      getCardData(Document d)
-      description: gets data for Scene Cards from d
-      returns: ArrayList of Scene Cards for board
-      precond: Document is not empty
-      postcond: ArrayList with full scene cards is returned
+   getCardData(Document d)
+   returns: ArrayList of Scene Cards for board
+   parameters:
+      d: Document object we're parsing
+   precond: d is not empty and is formatted properly
+   gets data for Scene Cards from a Document object
    */
    public ArrayList<SceneCard> getCardData(Document d){
       
@@ -125,10 +132,12 @@ public class XMLParser{
    }
    
    /*
-   getBoardData()
-   returns: ArrayList<Room> of rooms with all neighbors filled in, plus trailers and casting office
-   precond: Document is not null
-   postcond: rooms are returned with corrected neighboring 
+   getBoardData(Document d)
+   returns: ArrayList<Room> 
+   parameters:
+      d: Document object we're parsing
+   precond: Document is not empty and is formatted correctly
+   returns a list of rooms with filled in values, ready for use in Deadwood
    */
    public ArrayList<Room> getBoardData(Document d){
       Element root = d.getDocumentElement();       
@@ -164,7 +173,6 @@ public class XMLParser{
                //give set appropriate amount of shot tokens 
                s.setMaxShotTokens(shotTokens);
             }
-            
             else if(child.getNodeName().equals("parts")){
                NodeList parts = child.getChildNodes();
                for(int k = 0; k < parts.getLength(); k++){
@@ -197,10 +205,7 @@ public class XMLParser{
                   
                }
             }
-            
-         
-            //add full prepped scene to the roomlist
-            
+            //add full prepped scene to the roomlist 
          }
          roomlist.add(s);
       }
@@ -208,7 +213,7 @@ public class XMLParser{
       
       //add trailers to roomlist
       Trailers t = new Trailers();
-      t.setName("trailer"); // C H A N G E "trailers"
+      t.setName("trailer"); 
       roomlist.add(t);
       
       //add casting office to roomlist
@@ -218,12 +223,12 @@ public class XMLParser{
       int[] creditPrices = getPrices(root, "credit");
       int[] moneyPrices = getPrices(root, "dollar");
       CastingOffice c = new CastingOffice(moneyPrices, creditPrices);
-      c.setName("office"); // C H A N G E "office"
+      c.setName("office"); 
       roomlist.add(c);
       
       //fill in neighbors
       
-      NodeList sets = root.getElementsByTagName("set"); //
+      NodeList sets = root.getElementsByTagName("set"); 
       
       //fill in neighbors for the sets
       
@@ -258,10 +263,12 @@ public class XMLParser{
    }
    
    /*
-   addNeighbors()
-   returns: ArrayList<Room>, modified version of the input arraylist
+   addNeighbors(Node room, ArrayList<Room> roomlist)
+   returns: ArrayList<Room>
+      room: room to use as a potential neighbor
+      roomlist: list of all rooms, which will be modified
    precond: Node room != Null, roomlist != null
-   postcond: room which corresponds to the Node has all its neighbors filled out
+   fills out the neighbors fields for any rooms which have a passed room as a neighbor
    */
    private ArrayList<Room> addNeighbors(Node room, ArrayList<Room> roomlist){
       String roomName = ""; //blank, to be filled in later
@@ -306,10 +313,13 @@ public class XMLParser{
    }
    
    /*
-   getPrices()
-   returns: int[], prices related to given currency: position = related rank - 2
+   getPrices(Element root, String currency)
+   returns: int[] 
+   parameters:
+      root: root element of document
+      currency: string containing a currency type to get prices for
    precond: currency == "credit" or "dollar"
-   postcond: array with all relevant prices is returned
+   returns an array of the relevant rank prices in a certain currency. 
    */
    public int[] getPrices(Element root, String currency){
       int[] prices = new int[5];
@@ -343,10 +353,12 @@ public class XMLParser{
    }
    
    /*
-      getDocFromFile(String fileName)
-      returns: parsed Document object
-      precond: 
-      postcond: Document object parsed from xml file is returned
+   getDocFromFile(String fileName)
+   returns: Document
+   parameters:
+      filename: name of the file thet we're parsing from
+   precond: file.xml exists in the directory and is nonempty
+   returns Document object parsed from xml file
    */
    public Document getDocFromFile(String fileName) throws ParserConfigurationException{
       DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -362,6 +374,5 @@ public class XMLParser{
       
       return doc;
    }
-   
-   
+  
 }
