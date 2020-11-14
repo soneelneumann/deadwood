@@ -1,3 +1,8 @@
+/*
+Soneel Neumann and Chris Brown
+Board class, keeps track of players, scenes, rooms, and is responsible for clearing/reseting the board
+*/
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Stack;
@@ -5,9 +10,8 @@ import java.util.Stack;
 public class Board{
 
    private Room trailers;
-   //private room castingOffice; //superfluous?
    private ArrayList<Room> rooms;
-   private ArrayList<Scene> scenes; //needs to be changed, I can't make this work
+   private ArrayList<Scene> scenes; 
    private ArrayList<Player> players;
    
    private Stack<SceneCard> cardPile;
@@ -15,7 +19,6 @@ public class Board{
    /* Board initializer */
    public Board(ArrayList<SceneCard> cards){
       trailers = new Room();
-      //castingOffice = new CastingOffice();
       rooms = new ArrayList<Room>();
       this.cardPile = new Stack<SceneCard>();
       
@@ -27,29 +30,12 @@ public class Board{
       players = new ArrayList<Player>();
    }
    
-   /* Board initializer */
-   /*
-   public Board(){
-      scenes = new ArrayList<Scene>();
-      trailers = new Trailers();
-      castingOffice = new CastingOffice();
-      
-      rooms = new ArrayList<Room>();
-      
-      //copy contents of scenes into rooms
-      Collections.copy(rooms, scenes);
-      
-      //add trailers and casting office to rooms
-      rooms.add(trailers);
-      rooms.add(castingOffice);
-      
-   }
-   */
-   
+   /* getter for players list */
    public ArrayList<Player> getPlayerList(){
       return new ArrayList<Player>(players);
    }
    
+   /* adds player to players list */
    public void addPlayer(Player player){
       players.add(player);
    }
@@ -64,22 +50,23 @@ public class Board{
       scenes.add(s);
    }
    
-   /*
-   public void setSceneList(ArrayList<Scene> scenes){
-      this.scenes = scenes;
-   }
-   */
-   
+   /* setter for trailers */
    public void setTrailers(Room trailers){
       this.trailers = trailers;
    }
    
+   /* getter for trailers */
    public Room getTrailers(){
       return trailers;
    }
    
    
-   /*returns a Room if there is one which has a matching name to the passed string. Returns null if none is found*/
+   /*
+   getRoom(String roomName)
+   returns:Room()
+   Precondition: Board needs to get room
+   This returns a room given the room's name.
+   */
    public Room getRoom(String roomName){
       for(Room r: rooms){
          if(r.getName().equals(roomName)){
@@ -88,25 +75,11 @@ public class Board{
       }
       return null;
    }
-   
-   /*
-   public void setOffice(CastingOffice castingOffice){
-      this.castingOffice = castingOffice;
-   }
-   */
-   
-   /*adds a room to roomList*/
-   /*
-   public void addRoom(Room r){
-      rooms.add(r);
-   }
-   */
-   
+
    /*
    find(Player player)
    returns: Room()
    Precondition: the board needs to find the player
-   Postcondition: the board identifies the player and their location.
    This method parses through the rooms and checks to see which room the player is in and returns that room.
    */
    
@@ -126,7 +99,6 @@ public class Board{
    clearBoard()
    returns: null
    Precondition: the day is over.
-   Postcondtion: the board is cleared of all scene cards and shot tokens
    This method tidies up the board, getting rid of all the scene cards and tokens.
    */
    public void clearBoard(){
@@ -143,7 +115,6 @@ public class Board{
    resetBoard()
    returns: null
    Precondition: board is cleared
-   Postcondition: players are in their trailers, new scene cards are placed and shot tokens reset.
    This method sets the board back up for the next day to be played.
    */
    public void resetBoard(){
@@ -167,7 +138,6 @@ public class Board{
    isDayOver()
    returns: boolean
    Precondtion: scene is over
-   Postconditon: returns true if second to last scene, false if otherwise
    This method checks to see if the day is over
    */
    public boolean isDayOver(){
