@@ -1,3 +1,9 @@
+/*
+Chris Brown, Soneel Neumann
+
+One of the room types which makes up the Deadwood board. Allows players to increase their rank here. Also contains rank purchasing information. 
+*/
+
 import java.util.TreeMap;
 
 public class CastingOffice extends Room{
@@ -7,6 +13,8 @@ public class CastingOffice extends Room{
    /* Casting office initialization */
    public CastingOffice(){
       //set up the rank and money prices
+      prices_money = new int[5];
+      prices_credits = new int[5];
    }
    
    public CastingOffice(int[] prices_money, int[] prices_credits){
@@ -17,9 +25,8 @@ public class CastingOffice extends Room{
    /*
    getRankMoneyPrices()
    returns: int
-   Precondition: the player wants to know the ranks value in monetary value.
-   Postcondition: the player knows the desired ranks value in monetary value.
-   This method gets the money price of the desired rank.
+   precondition: none
+   returns rank prices in dollars
    */
    public int[] getRankMoneyPrices(){
       int[] temp = new int[prices_money.length]; //this will need to be changed to a Set<Integer>
@@ -32,9 +39,8 @@ public class CastingOffice extends Room{
    /*
    getRankCreditPrices()
    returns: int
-   Precondition: the player wants to know the ranks value in credit value. 
-   Postcondition: the player knows the desired ranks value in credit valiue.
-   This method gets the credit price of the desired rank.
+   precondition: none
+   returns rank prices in credits
    */
    public int[] getRankCreditPrices(){
       int[] temp = new int[prices_credits.length]; 

@@ -1,3 +1,10 @@
+/*
+Chris Brown, Soneel Neumann
+
+One of the room types which makes up the Deadwood board. Contains a set of Roles for the Player to take and a Scene Card 
+   slot, which may be full or empty depending on the game state.
+*/
+
 import java.util.ArrayList;
 
 public class Scene extends Room{
