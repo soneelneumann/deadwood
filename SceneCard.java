@@ -1,3 +1,8 @@
+/*
+Soneel Neumann and Chris Brown
+SceneCard class, keeps track of scenename, scenetext, scenenumber, roles, and the scenebudget. 
+*/
+
 import java.util.ArrayList;
 
 public class SceneCard{
@@ -13,7 +18,6 @@ public class SceneCard{
    
    /* Scene card initializer */
    public SceneCard(){
-      //stuff goes here 
       roles = new ArrayList<Role>();  
    }
    
@@ -32,7 +36,6 @@ public class SceneCard{
    addRole()
    returns: 
    precond: r is a non empty Role
-   postcond: r is added into roles
    Adds a new Role to the list of Roles in the scene card
    */
    public void addRole(Role r){
@@ -43,8 +46,6 @@ public class SceneCard{
    getSceneBudget() 
    Returns: int
    Precondtion: There is a budget attached to a scene card
-   Postcondiion: The user can access the budget of the scene card
-   
    This method gets the budget of the scene card
    */
    public int getSceneBudget(){
@@ -54,9 +55,7 @@ public class SceneCard{
    /*
    setBudget()
    returns:
-   precond: 
-   postcond: budget is set to the passed value 
-   
+   precond: scene needs a budget
    Setter for sceneBudget
    */
    public void setSceneBudget(int sceneBudget){
@@ -67,8 +66,6 @@ public class SceneCard{
    getRoles()
    Returns: ArrayList
    Precondtion: There is a list of roles associated with a scene card
-   Postconditon: The user can access the list of roles that are available
-   
    This method gets the roles of the scene card available to the user
    */
    public ArrayList<Role> getRoles(){
@@ -80,8 +77,6 @@ public class SceneCard{
    getSceneNumber()
    returns: int, the scene number
    precond: scene number
-   postcond: scene number is returned
-   
    Getter for the scene number
    */
    public int getSceneNumber(){
@@ -92,8 +87,6 @@ public class SceneCard{
    setSceneNumber()
    returns: none
    precond: 
-   postcond: sceneNumber is set to given value
-   
    Setter for the scene number
    */
    public void setSceneNumber(int sceneNumber){
@@ -104,8 +97,6 @@ public class SceneCard{
    getSceneText()
    returns: String, text stored in sceneText
    precond: 
-   postcond: returns sceneText
-   
    Getter for scene text
    */
    public String getSceneText(){
@@ -116,8 +107,6 @@ public class SceneCard{
    setSceneText()
    returns: 
    precond: 
-   postcond: sceneText is changed to input String
-   
    Setter for sceneText 
    */
    public void setSceneText(String sceneText){
