@@ -1,3 +1,8 @@
+/*
+Soneel Neumann and Chris Brown
+Dice class, responsible for the random rolling of dice in the game.
+*/
+
 import java.util.Random;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,9 +19,8 @@ public class Dice{
    /*
       rollPayout(int budget)
       returns: ArrayList<Integer>
-      description: rolls the payout at the end of the scene
       precond: the scene we are doing payout for is over
-      postcond: payout is calculated correctly and is in order from highest roll to lowest
+      description: rolls the payout at the end of the scene
    */
    public ArrayList<Integer> rollPayout(int budget){
       ArrayList<Integer> payout = new ArrayList<Integer>();
@@ -31,9 +35,8 @@ public class Dice{
    /*
       rollAct(int bonus)
       returns: ArrayList<Integer> 
-      description: rolls the result fo an act attempt
       precond: bonus is greater than or equal to zero
-      postcond: acting roll is returned
+      description: rolls the result fo an act attempt
    */
    public int rollAct(int bonus){
       int roll = rand.nextInt(6) + 1;

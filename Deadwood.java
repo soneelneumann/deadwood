@@ -1,3 +1,8 @@
+/*
+Soneel Neumann and Chris Brown
+Deadwood class, runs the game.
+*/
+
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.Arrays;
@@ -7,8 +12,13 @@ import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
 
 public class Deadwood{
+   /*
+   main(String[] args)
+   returns: 
+   precondition: game needs to start
+   Runs the game
+   */
    public static void main(String[] args) throws ParserConfigurationException{
-//       initialize board
       Scanner scan = new Scanner(System.in);
       
       
@@ -86,9 +96,8 @@ public class Deadwood{
       System.out.println("Press enter when you're ready to start.\n");
       String waitHere = scan.nextLine();
       
-//       
-//       start game
-//       
+      
+      //start game     
       //move players to the trailers
       for(int i = 0; i < players.length; i++){
          players[i].move(b.getTrailers());
@@ -98,7 +107,7 @@ public class Deadwood{
       
       //begin player turnOrder
       int currentTurn = 0;
-      boolean continueGame = true; //boolean for if the game is still running
+      boolean continueGame = true; 
       boolean continueDay = true;
       while(continueGame){
          
@@ -108,7 +117,7 @@ public class Deadwood{
             for(int i = 0; i < players.length; i++){
                String[] availableActions = getAvailableActions(players[i]);
                System.out.println("It is now Player " + players[i].getPlayerNumber() + "'s turn.");
-               parseTurn(moderator, b, players[i], scan, availableActions); //run through the player's turn
+               parseTurn(moderator, b, players[i], scan, availableActions); 
                if(b.isDayOver()){
                   
                   moderator.removeDay();
@@ -145,6 +154,17 @@ public class Deadwood{
    }
    
    /*runs through a player's turn*/
+   /*
+   parseTurn(Moderator moderator, Board board, Player player, Scanner scan, String[] availableActions)
+   params:
+      Moderator moderator, for checking validity of actions a player is attempting
+      Board board, performing the actions on the board
+      Player player, which player is performing actions
+      Scanner scan, input for player actions
+      String[] avaialableActions, displays available actions a player can perform
+   precond: player needs to go through turn
+   Allows player to go through turn   
+   */
    public static void parseTurn(Moderator moderator, Board board, Player player, Scanner scan, String[] availableActions){
       System.out.println("Here's what you can do: " + Arrays.toString(availableActions));
       System.out.println("Type your command below: ");
@@ -288,7 +308,7 @@ public class Deadwood{
             }
             
             
-            newAvailableActions = new String[]{"end"}; //weird error here made me not declare this
+            newAvailableActions = new String[]{"end"}; 
             parseTurn(moderator, board, player, scan, newAvailableActions);
             break;
             
@@ -323,7 +343,6 @@ public class Deadwood{
             else{
                System.out.println("Your stats:");
                System.out.println("\tPractice Tokens: " + player.getPracticeTokens());
-               //System.out.println("\tScene shot tokens: " + player.getCurrentRoom().getShotTokens());
             }
             
             parseTurn(moderator, board, player, scan, availableActions);
@@ -347,7 +366,12 @@ public class Deadwood{
       
    }
    
-   /*returns a set of available actions for a player at the start of turn*/
+   /*
+   getAvailableActions(Player player)
+   returns: String[]
+   precond: player needs to know what they can do at beginning of turn
+   Player is given set of available actions at start of their turn
+   */
    public static String[] getAvailableActions(Player player){
       if(player.getCurrentRole() == null){
          String[] availableActions = {"move", "role", "rank", "where", "end", "day", "stats"};
@@ -357,7 +381,12 @@ public class Deadwood{
       return availableActions;
    }
    
-   /*returns the user's inputted amount of players*/
+   /*
+   getPlayerNumber(Scanner scan)
+   returns: int
+   precondition: how many players?
+   Each player is assigned a player number, returns amount of players
+   */
    public static int getPlayerNumber(Scanner scan){
       
       String playerEntry = scan.nextLine();
@@ -375,8 +404,13 @@ public class Deadwood{
          return getPlayerNumber(scan);
       }
    }
-   
-   /*displays all relevant info about the room the player is in*/
+  
+   /*
+   where(Room r)
+   returns: 
+   precond: player needs info about room they're in
+   Text is printed to screen about all info about the room the player is currently in
+   */
    public static void where(Room r){
       System.out.println("You are currently in: " + r.getName());
       if(r.getName().equals("Casting Office")){
@@ -460,21 +494,16 @@ public class Deadwood{
       }
    }
    
+   /* 
+   shufflePlayerOrder(Player[] players)
+   returns: Player[]
+   precondition: order turn needs to be randomized
+   Randomizes player order
+   */
    public static Player[] shufflePlayerOrder(Player[] players){
       List<Player> playerList = Arrays.asList(players);
       Collections.shuffle(playerList);
       playerList.toArray(players);
       return players;
    }
-   
-   /*
-      Displays where the player is and if they are in a scene
-   */
-   public static void where(Player p, Board b){
-
-   }
-   
-   /*
-   
-   */
 }
