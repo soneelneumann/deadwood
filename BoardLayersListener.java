@@ -73,7 +73,7 @@ public class BoardLayersListener extends JFrame {
        ImageIcon pIcon = new ImageIcon("r2.png");
        playerlabel.setIcon(pIcon);
        playerlabel.setBounds(114,227,pIcon.getIconWidth(),pIcon.getIconHeight());  
-       playerlabel.setBounds(114,227,46,46);
+       //playerlabel.setBounds(114,227,46,46);
        playerlabel.setVisible(true);
        bPane.add(playerlabel,new Integer(3));
       
