@@ -6,6 +6,9 @@ import java.awt.event.*;
 import javax.swing.JOptionPane;
 import java.util.ArrayList;
 
+import javax.xml.parsers.ParserConfigurationException;
+
+
 public class Display extends JFrame{
    // JLabels
    JLabel boardlabel;
@@ -17,7 +20,11 @@ public class Display extends JFrame{
    JButton bAct;
    JButton bRehearse;
    JButton bMove;
+   JButton bRank;
    
+   ArrayList<JButton> rankButtons;
+   
+   ArrayList<String> roomlist;
    
    //private ArrayList<String> playerColors; //determines which active players have which color
    private String[] colorOrder; //determines which player number has which colors
@@ -25,6 +32,8 @@ public class Display extends JFrame{
   // JLayered Pane
    JLayeredPane bPane;
    public Display(){
+   
+   
       // Set the title of the JFrame
       super("Deadwood");
       // Set the exit option for the JFrame
@@ -45,28 +54,72 @@ public class Display extends JFrame{
       // Set the size of the GUI
       setSize(icon.getIconWidth()+200,icon.getIconHeight());
       
-      
+      /*
       // Create Action buttons
       bAct = new JButton("ACT");
       bAct.setBackground(Color.white);
       bAct.setBounds(icon.getIconWidth()+10, 30,100, 20);
       bAct.addMouseListener(new boardMouseListener());
-       
+      
       bRehearse = new JButton("REHEARSE");
       bRehearse.setBackground(Color.white);
       bRehearse.setBounds(icon.getIconWidth()+10,60,100, 20);
       bRehearse.addMouseListener(new boardMouseListener());
+      */ 
        
       bMove = new JButton("MOVE");
       bMove.setBackground(Color.white);
-      bMove.setBounds(icon.getIconWidth()+10,90,100, 20);
+      bMove.setBounds(icon.getIconWidth()+10,30,100, 20);
       bMove.addMouseListener(new boardMouseListener());
       
+      bRank = new JButton("RANK");
+      bRank.setBackground(Color.white);
+      bRank.setBounds(icon.getIconWidth()+10,60,100, 20);
+      bRank.addMouseListener(new boardMouseListener());
+      
+      /*
       // Place the action buttons in the top layer
       bPane.add(bAct, new Integer(2));
       bPane.add(bRehearse, new Integer(2));
+      */ 
       bPane.add(bMove, new Integer(2));
-       
+      bPane.add(bRank, new Integer(2));
+      
+      //for test only
+      
+      //set up rooms:
+      roomlist = new ArrayList<String>();
+      roomlist.add("Train Station");
+      roomlist.add("Secret Hideout");
+      roomlist.add("Church");
+      roomlist.add("Hotel");
+      roomlist.add("Main Street");
+      roomlist.add("Jail");
+      roomlist.add("General Store");
+      roomlist.add("Ranch");
+      roomlist.add("Bank");
+      roomlist.add("Saloon");
+      
+      
+      
+      rankButtons = new ArrayList<JButton>();
+      //add a bunch of rank buttons
+      for(int i = 1; i <= 6; i++){
+         JButton rankButton = new JButton("Rank " + i);
+         rankButton.setBackground(Color.white);
+         rankButton.setBounds(icon.getIconWidth()+10, 30 * i, 100, 20);
+         rankButton.addMouseListener(new boardMouseListener());
+         rankButtons.add(rankButton);
+      }
+      
+      
+      /*
+      //place rank buttons on the top layer
+      for(JButton j : rankButtons){
+         bPane.add(j, new Integer(2));
+      }
+      */
+             
       //important to understand
       int playerNumber = numberOfPlayers(); //number of players in this game
       System.out.println(playerNumber);
@@ -110,7 +163,7 @@ public class Display extends JFrame{
    class boardMouseListener implements MouseListener{
   
       // Code for the different button clicks
-      public void mouseClicked(MouseEvent e) {
+      public void mouseClicked(MouseEvent e){
 
          if (e.getSource()== bAct){
             //playerlabel.setVisible(true);
@@ -120,9 +173,36 @@ public class Display extends JFrame{
          else if (e.getSource()== bRehearse){
             System.out.println("Rehearse is Selected\n");
          }
+         else if(e.getSource() == bRank){
+            String rank = JOptionPane.showInputDialog(boardlabel, "Enter in your desired rank as a number.");
+            ImageIcon rankFace = new ImageIcon("b" + rank + ".png");
+            playerlabels.get(0).setIcon(rankFace);
+         }
          else if (e.getSource()== bMove){
-            System.out.println("Move is Selected\n");
-         }         
+            String dest = JOptionPane.showInputDialog(boardlabel, "Enter in your destination:");
+            XMLParser xml = new XMLParser();
+            String[] coords = new String[0]; //blank, filled in later
+            try{
+               coords = xml.getRoomCoordinates(dest, "board.xml");
+            }
+            catch(Exception ParserConfigurationException){
+               //oopsie
+            }
+            //move player 1 for now, once developed more could be any player depending on turn
+            Icon playerIcon = playerlabels.get(0).getIcon();
+            int x = Integer.parseInt(coords[0]);
+            int y = Integer.parseInt(coords[1]);
+            playerlabels.get(0).setBounds(x + 5, y + 5, playerIcon.getIconWidth(), playerIcon.getIconHeight());
+         }   
+         
+         else if(rankButtons.contains(e.getSource())){
+            JButton j = rankButtons.get(rankButtons.indexOf(e.getSource()));
+            String buttonText = j.getText();
+            String rankNum = buttonText.substring(buttonText.length() - 1, buttonText.length());
+            ImageIcon rankFace = new ImageIcon("b" + rankNum + ".png");
+            playerlabels.get(0).setIcon(rankFace);
+         }  
+             
       }
       public void mousePressed(MouseEvent e) {
       }

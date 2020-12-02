@@ -374,5 +374,36 @@ public class XMLParser{
       
       return doc;
    }
-  
+   
+   
+   /*
+   getRoomCoordinates
+   returns string array with coordinates as elements
+   */
+   public String[] getRoomCoordinates(String roomname, String filename) throws ParserConfigurationException{
+      Document doc = getDocFromFile(filename);
+      Element root = doc.getDocumentElement();
+      
+      //search through each room to find the one we're looking for
+      NodeList rooms = root.getChildNodes();
+      for(int i = 0; i < rooms.getLength(); i++){
+         Node room = rooms.item(i);
+         //f this is the right room
+         if(room.getNodeType() == Node.ELEMENT_NODE && room.getAttributes().getNamedItem("name").getNodeValue().equals(roomname)){
+            NodeList children = room.getChildNodes();
+            for(int j = 0; j < children.getLength(); j ++){
+               Node child = children.item(j);
+               if(child.getNodeType() == Node.ELEMENT_NODE && child.getNodeName().equals("area")){
+                  String x = child.getAttributes().getNamedItem("x").getNodeValue();
+                  String y = child.getAttributes().getNamedItem("y").getNodeValue();
+                  String h = child.getAttributes().getNamedItem("h").getNodeValue();
+                  String w = child.getAttributes().getNamedItem("w").getNodeValue();
+                  return new String[]{x, y, h, w}; //returns coordinates as a new String[]
+               }
+            }
+         }
+      }
+      return new String[]{};
+   }
+   
 }
