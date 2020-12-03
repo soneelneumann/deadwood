@@ -8,7 +8,7 @@ import java.util.Scanner;
 public class Player{
    
    //name of the Player
-   public int playerNumber;
+   public String playerName;
    
    //number of credits this player has
    private int credits = 0;
@@ -36,26 +36,16 @@ public class Player{
    }
    
    /*Player initializer, given player's num*/
-   public Player(int playerNumber){
-      this.playerNumber = playerNumber;
+   public Player(String playerName){
+      this.playerName = playerName;
    }
    
    /*Player initializer, given player's num, their money and their credits, and rank*/
-   public Player(int playerNumber, int money, int credits, int rank){
-      this.playerNumber = playerNumber;
+   public Player(String playerName, int money, int credits, int rank){
+      this.playerName = playerName;
       this.money = money;
       this.credits = credits;
       this.rank = rank;
-   }
-
-   /* setter for player's number */
-   public void setPlayerNum(int playerNum){
-      this.playerNumber = playerNum;
-   }
-   
-   /* getter for player's number */
-   public int getPlayerNumber(){
-      return this.playerNumber;
    }
    
    /* setter for player's rank */

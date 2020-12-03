@@ -21,7 +21,7 @@ public class Deadwood{
    public static void main(String[] args) throws ParserConfigurationException{
       Scanner scan = new Scanner(System.in);
       
-      
+               //STAYS HERE
       XMLParser xml = new XMLParser();
       ArrayList<SceneCard> cardPile = xml.getCards("cards.xml");
       
@@ -39,14 +39,15 @@ public class Deadwood{
             r.setName("Casting Office");
          }
       }
+      
+               //DISPLAY??
       b.setRoomList(roomList); //fill in roomlist for board
       b.resetBoard(); //initializes scene cards and shot tokens
       
       
-      System.out.println("Welcome to Deadwood! \nPlease enter in the number of Players (2 to 8)");
-      int playerAmount = getPlayerNumber(scan);
-      System.out.println("Please assign yourselves as Players 1 through " + playerAmount);
       
+      
+                     //GOES IN DISPLAY
       //initialize our Players
       Player[] players = new Player[playerAmount];
       
@@ -84,10 +85,13 @@ public class Deadwood{
          }
       }
       
+               //DISPLAY, maybe use Association
       Moderator moderator = new Moderator(numberOfDays);
       Banker banker = new Banker();
       Dice dice = new Dice();
       
+      
+               //DELETE
       System.out.println("The turn ourder for this game will be: ");
       for(int i = 0; i < players.length; i++){
          System.out.println("Turn " + (i+1) + ": Player " + players[i].getPlayerNumber());
@@ -96,15 +100,18 @@ public class Deadwood{
       System.out.println("Press enter when you're ready to start.\n");
       String waitHere = scan.nextLine();
       
-      
+               //DISPLAY
       //start game     
       //move players to the trailers
       for(int i = 0; i < players.length; i++){
          players[i].move(b.getTrailers());
       }
       
+               //REMOVE
       displayTutorialText(players.length, numberOfDays);
       
+      
+               //DISPLAY
       //begin player turnOrder
       int currentTurn = 0;
       boolean continueGame = true; 
@@ -112,7 +119,7 @@ public class Deadwood{
       while(continueGame){
          
          
-         
+            //REPLACED BY MOUSE LISTENER
          while(continueDay){
             for(int i = 0; i < players.length; i++){
                String[] availableActions = getAvailableActions(players[i]);
@@ -144,6 +151,7 @@ public class Deadwood{
          }
       }
       
+               //DISPLAY
       //display each player's score
       System.out.println("Final score:");
       for(Player player : players){
@@ -165,12 +173,19 @@ public class Deadwood{
    precond: player needs to go through turn
    Allows player to go through turn   
    */
+   
+   
+   
+            //DISPLAY            //dont pass          pass        dont pass      dont           dont
    public static void parseTurn(Moderator moderator, Board board, Player player, Scanner scan, String[] availableActions){
+      
+               //REMOVE
       System.out.println("Here's what you can do: " + Arrays.toString(availableActions));
       System.out.println("Type your command below: ");
       String command = scan.next();
       List<String> actionList = Arrays.asList(availableActions);
       
+               //DISPLAY, REMOVE ALL TEXT RELATED CODE AND REPLACE WITH MOUSE LISTENER
       if(!actionList.contains(command)){
          System.out.println("oops! looks like you typed something other than the avilable commands");
          if(scan.hasNextLine()){
@@ -350,6 +365,7 @@ public class Deadwood{
       }
    }
    
+            //REMOVE
    /*displays the tutorial text for the game*/
    public static void displayTutorialText(int playerNum, int daysLeft){
       System.out.println("This game has the same rules the board game does. The available commands are:");
@@ -372,6 +388,8 @@ public class Deadwood{
    precond: player needs to know what they can do at beginning of turn
    Player is given set of available actions at start of their turn
    */
+   
+            //DISPLAY, MAYBE UNDER DIFFERENT METHOD
    public static String[] getAvailableActions(Player player){
       if(player.getCurrentRole() == null){
          String[] availableActions = {"move", "role", "rank", "where", "end", "day", "stats"};
@@ -387,6 +405,8 @@ public class Deadwood{
    precondition: how many players?
    Each player is assigned a player number, returns amount of players
    */
+   
+            //REMOVE
    public static int getPlayerNumber(Scanner scan){
       
       String playerEntry = scan.nextLine();
@@ -411,6 +431,8 @@ public class Deadwood{
    precond: player needs info about room they're in
    Text is printed to screen about all info about the room the player is currently in
    */
+   
+            //REMOVE
    public static void where(Room r){
       System.out.println("You are currently in: " + r.getName());
       if(r.getName().equals("Casting Office")){
@@ -455,7 +477,7 @@ public class Deadwood{
             System.out.println("The scene in this room is currently wrapped.");
          }
       }
-
+      
       System.out.println("Neighbors: ");
       for(Room n : r.getNeighbors()){
          if(n.getName().equals("Casting Office") || n.getName().equals("Trailers")){
@@ -500,6 +522,8 @@ public class Deadwood{
    precondition: order turn needs to be randomized
    Randomizes player order
    */
+   
+         //DISPLAY
    public static Player[] shufflePlayerOrder(Player[] players){
       List<Player> playerList = Arrays.asList(players);
       Collections.shuffle(playerList);

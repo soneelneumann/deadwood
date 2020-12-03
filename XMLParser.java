@@ -384,6 +384,38 @@ public class XMLParser{
       Document doc = getDocFromFile(filename);
       Element root = doc.getDocumentElement();
       
+      
+      NodeList trailers = root.getElementsByTagName("trailer");
+      Node trailer = trailers.item(0);
+      if(trailer.getNodeName().equals(roomname)){
+         NodeList children = trailer.getChildNodes();
+         for(int i = 0; i < children.getLength(); i++){
+            Node child = children.item(i);
+            if(child.getNodeType() == Node.ELEMENT_NODE && child.getNodeName().equals("area")){
+               String x = child.getAttributes().getNamedItem("x").getNodeValue();
+               String y = child.getAttributes().getNamedItem("y").getNodeValue();
+               String h = child.getAttributes().getNamedItem("h").getNodeValue();
+               String w = child.getAttributes().getNamedItem("w").getNodeValue();
+               return new String[]{x, y, h, w}; //returns coordinates as a new String[]
+            }
+         }
+      }
+      
+      Node office = root.getElementsByTagName("office").item(0);
+      if(office.getNodeName().equals(roomname)){
+         NodeList children = office.getChildNodes();
+         for(int i = 0; i < children.getLength(); i++){
+            Node child = children.item(i);
+            if(child.getNodeType() == Node.ELEMENT_NODE && child.getNodeName().equals("area")){
+               String x = child.getAttributes().getNamedItem("x").getNodeValue();
+               String y = child.getAttributes().getNamedItem("y").getNodeValue();
+               String h = child.getAttributes().getNamedItem("h").getNodeValue();
+               String w = child.getAttributes().getNamedItem("w").getNodeValue();
+               return new String[]{x, y, h, w}; //returns coordinates as a new String[]
+            }
+         }
+      }
+      
       //search through each room to find the one we're looking for
       NodeList rooms = root.getChildNodes();
       for(int i = 0; i < rooms.getLength(); i++){
@@ -406,4 +438,77 @@ public class XMLParser{
       return new String[]{};
    }
    
+   //returns coords for a role off the scene card
+   //precond: rolename is name of role contained within the room named "roomname"
+   public String[] getOffCardRoleCoords(String roomname, String rolename, String filename) throws ParserConfigurationException{
+      Document doc = getDocFromFile(filename);
+      Element root = doc.getDocumentElement();
+      
+      NodeList sets = root.getElementsByTagName("set");
+      for(int i = 0; i < sets.getLength(); i++){
+         Node set = sets.item(i);
+         if(set.getAttributes().getNamedItem("name").getNodeValue().equals(roomname)){
+            NodeList children = set.getChildNodes();
+            for(int j = 0; j < children.getLength(); j++){
+               Node child = children.item(j);
+               if(child.getNodeName().equals("parts")){
+                  NodeList parts = child.getChildNodes();
+                  for(int k = 0; k < parts.getLength(); k++){
+                     Node part = parts.item(k);
+                     if(part.getAttributes().getNamedItem("name").equals(rolename)){
+                        NodeList partChildren = part.getChildNodes();
+                        for(int m = 0; m < partChildren.getLength(); m++){
+                           Node partChild = partChildren.item(m);
+                           if(partChild.getNodeName().equals("area")){
+                              String x = partChild.getAttributes().getNamedItem("x").getNodeValue();
+                              String y = partChild.getAttributes().getNamedItem("y").getNodeValue();
+                              String h = partChild.getAttributes().getNamedItem("h").getNodeValue();
+                              String w = partChild.getAttributes().getNamedItem("w").getNodeValue();
+                              
+                              return new String[]{x, y, h, w}; //return coords as a new String[]
+                           }
+                        }
+                     }
+                  }
+               }
+            }
+         }
+      }
+      return new String[]{};
+   }
+   
+   //returns coords for a role on the scene card
+   //precond: rolename is a role on card "cardname"
+   public String[] getOnCardRoleCoords(String rolename, String cardname, String filename)throws ParserConfigurationException{
+      Document doc = getDocFromFile(filename);
+      Element root = doc.getDocumentElement();
+      
+      NodeList cards = root.getElementsByTagName("card");
+      for(int i = 0; i < cards.getLength(); i++){
+         Node card = cards.item(i);
+         if(card.getAttributes().getNamedItem("name").getNodeValue().equals(cardname)){
+            NodeList cardChildren = card.getChildNodes();
+            for(int j = 0; j < cardChildren.getLength(); j++){
+               Node cardChild = cardChildren.item(j); 
+               if(cardChild.getNodeName().equals("part") && 
+                     cardChild.getAttributes().getNamedItem("name").getNodeValue().equals(rolename)){
+                  
+                  NodeList partChildren = cardChild.getChildNodes();
+                  for(int k = 0; k < partChildren.getLength(); k++){
+                     Node partChild = partChildren.item(k);
+                     if(partChild.getAttributes().getNamedItem("name").getNodeValue().equals("area")){
+                        String x = partChild.getAttributes().getNamedItem("x").getNodeValue();
+                        String y = partChild.getAttributes().getNamedItem("y").getNodeValue();
+                        String h = partChild.getAttributes().getNamedItem("h").getNodeValue();
+                        String w = partChild.getAttributes().getNamedItem("w").getNodeValue();
+                        
+                        return new String[]{x, y, h, w}; //return coords as a new String[]
+                     }
+                  }
+               }
+            }
+         }
+      }
+      return new String[]{};
+   }
 }
