@@ -35,6 +35,8 @@ public class Display extends JFrame{
    ArrayList<Player> players;
    
    TreeMap<String, JLabel> cardLabels; //string is the room the card is located
+
+   Board b;
    
    int numberOfDays;
    int boardWidth;
@@ -45,12 +47,14 @@ public class Display extends JFrame{
   
   // JLayered Pane
    JLayeredPane bPane;
-   public Display(ArrayList<Room> roomlist){
+   public Display(ArrayList<Room> roomlist, Board board){
       // Set the title of the JFrame
       super("Deadwood");
       
       
       numberOfDays = 4; //standard number of days
+
+      b = board;
       
       cardLabels = new TreeMap<String, JLabel>(); //Initializes it so we can use it later
    
@@ -116,7 +120,11 @@ public class Display extends JFrame{
       
       //randomize the players
       Collections.shuffle(players);
-      
+
+      for(int i = 0; i < players.size(); i++){
+         players.get(i).move(board.getTrailers());
+      }
+
       
       
       int ydisp = 0; //helps keep track of how to order pngs. Represents how far down the screen to display
@@ -299,6 +307,7 @@ public class Display extends JFrame{
          }
          else if (e.getSource()== bMove){
             String dest = JOptionPane.showInputDialog(boardlabel, "Enter in your destination:");
+            String dest2 = dest;
             if(dest.equals("Casting Office")){
                dest = "office";
             }
@@ -314,10 +323,16 @@ public class Display extends JFrame{
                //any error catches go here
             }
             //move player 1 for now, once developed more could be any player depending on turn
-            Icon playerIcon = playerlabels.get(0).getIcon();
-            int x = Integer.parseInt(coords[0]);
-            int y = Integer.parseInt(coords[1]);
-            playerlabels.get(0).setBounds(x /*+ 5*/, y /*+ 5*/, playerIcon.getIconWidth(), playerIcon.getIconHeight());
+            Moderator moderator = new Moderator(numberOfDays);
+
+            
+            if(moderator.checkMove(players.get(0).getCurrentRoom(), dest2)){
+               players.get(0).move(b.getRoom(dest2));
+               Icon playerIcon = playerlabels.get(0).getIcon();
+               int x = Integer.parseInt(coords[0]);
+               int y = Integer.parseInt(coords[1]);
+               playerlabels.get(0).setBounds(x /*+ 5*/, y /*+ 5*/, playerIcon.getIconWidth(), playerIcon.getIconHeight());
+            }
          }
          
          else if(e.getSource() == bEnd){
