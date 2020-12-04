@@ -19,9 +19,10 @@ import javax.xml.parsers.ParserConfigurationException;
 public class Display extends JFrame{
    // JLabels
    JLabel boardlabel;
-   //ArrayList<JLabel> cardlabels; //??
    ArrayList<JLabel> playerlabels; //fill this almost right after initialization
-   JLabel mLabel; //?
+   JLabel playerName;
+   JLabel playerMoney;
+   JLabel playerCredits;
      
    //JButtons
    JButton bAct;
@@ -31,23 +32,25 @@ public class Display extends JFrame{
    JButton bEnd;
    JButton bRole;
    
-   ArrayList<Room> roomlist;
    ArrayList<Player> players;
+   Player currentPlayer;
    
    TreeMap<String, JLabel> cardLabels; //string is the room the card is located
-
+   
+   //stores shot tokens for each scene; string is roomname, list is shot tokens
+   TreeMap<String, ArrayList<JLabel>> shotTokens; 
+   
    Board b;
    
    int numberOfDays;
    int boardWidth;
    int boardHeight;
    
-   //private ArrayList<String> playerColors; //determines which active players have which color
    private String[] colors; //determines which player number has which colors
   
   // JLayered Pane
    JLayeredPane bPane;
-   public Display(ArrayList<Room> roomlist, Board board){
+   public Display(Board board){
       // Set the title of the JFrame
       super("Deadwood");
       
@@ -57,6 +60,12 @@ public class Display extends JFrame{
       b = board;
       
       cardLabels = new TreeMap<String, JLabel>(); //Initializes it so we can use it later
+      
+      shotTokens = new TreeMap<String, ArrayList<JLabel>>();
+      
+      playerName = new JLabel();
+      playerMoney = new JLabel();
+      playerCredits = new JLabel();
    
       // Set the exit option for the JFrame
       setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -120,6 +129,9 @@ public class Display extends JFrame{
       
       //randomize the players
       Collections.shuffle(players);
+      
+      //set first player to be the first in the player list
+      currentPlayer = players.get(0); 
 
       for(int i = 0; i < players.size(); i++){
          players.get(i).move(board.getTrailers());
@@ -157,7 +169,10 @@ public class Display extends JFrame{
       
       //add scene card labels:
       
-      //replaced by something to do with the Board later:
+      //replaced by something to do with the Board later: ///////////////////////////////////////////////////////
+      //use board.getRoomNames, put an if to exclude Trailers and Casting Office////////////////////////////////////////////////
+      
+      
       String[] setnames = new String[]{"Train Station", "Secret Hideout", "Church", "Hotel", "Main Street", "Jail", "General Store", "Ranch", "Bank", "Saloon"};
       
       XMLParser xml = new XMLParser();
@@ -186,7 +201,40 @@ public class Display extends JFrame{
       }
       
       
-      this.roomlist = roomlist; //maybe at the top?? for clarity
+      displayShotTokens();
+      updateStats();
+   }
+   
+   /*
+      sets up the labels for shot tokens 
+   */
+   public void displayShotTokens(){
+      XMLParser xml = new XMLParser();
+      for(String roomname : b.getRoomNames()){
+         int numberOfTokens = b.getRoom(roomname).getMaxShotTokens();
+         ArrayList<JLabel> tokenList = new ArrayList<JLabel>(); //to be added to our map
+         for(int i = 1; i <= numberOfTokens; i++){
+            String[] coords = new String[]{}; //blank, filled in later
+            try{ 
+               coords = xml.getShotTokenCoords("" + i, roomname, "board.xml");
+            }
+            catch(Exception ParserConfigurationException){
+               //error message
+            }
+            int x = Integer.parseInt(coords[0]);
+            int y = Integer.parseInt(coords[1]);
+            
+            JLabel token = new JLabel();
+            ImageIcon shot = new ImageIcon("shot.png");
+            token.setIcon(shot);
+            token.setBounds(x, y, shot.getIconWidth(), shot.getIconHeight());
+            
+            bPane.add(token, new Integer(1));
+            tokenList.add(token);
+            
+         }
+         shotTokens.put(roomname, tokenList);
+      }
    }
    
    
@@ -262,6 +310,9 @@ public class Display extends JFrame{
       }
    }
    
+   /*
+   sets the starting conditions for the game
+   */
    public void setStartingCondition(int playerNumber){
       if(playerNumber < 4){
          numberOfDays = 3;
@@ -284,26 +335,124 @@ public class Display extends JFrame{
    }
    
    
+   /*
+   displays the current player's stats
+   */
+   public void updateStats(){
+      playerName.setText("Player Name: " + currentPlayer.playerName);
+      playerName.setFont(new Font("SansSerif", Font.PLAIN, 18));
+      playerName.setBounds(boardWidth + 10, 300, 300, 100);
+      
+      playerMoney.setText("Money: " + currentPlayer.getMoney());
+      playerMoney.setFont(new Font("SansSerif", Font.PLAIN, 18));
+      playerMoney.setBounds(boardWidth + 10, 320, 300, 100);
+      
+      playerCredits.setText("Credits: " + currentPlayer.getCredits());
+      playerCredits.setFont(new Font("SansSerif", Font.PLAIN, 18));
+      playerCredits.setBounds(boardWidth + 10, 340, 300, 100);
+      
+      bPane.add(playerName, new Integer(2));
+      bPane.add(playerMoney, new Integer(2));
+      bPane.add(playerCredits, new Integer(2));
+   }
+   
+   public void move(Player player, String roomname) throws ParserConfigurationException{
+      XMLParser xml = new XMLParser();
+      
+      String[] coords = xml.getRoomCoordinates(roomname, "board.xml");
+      int x = Integer.parseInt(coords[0]);
+      int y = Integer.parseInt(coords[1]);
+      
+      JLabel playerlabel = playerlabels.get(players.indexOf(player));
+      Icon playerIcon = playerlabel.getIcon();
+      playerlabel.setBounds(x,y, playerIcon.getIconWidth(), playerIcon.getIconHeight());
+   }
+   
    //listens for activity on the board
    class boardMouseListener implements MouseListener{
   
       // Code for the different button clicks
       public void mouseClicked(MouseEvent e){
-
+         
          if (e.getSource()== bAct){
-            //playerlabel.setVisible(true);
-            System.out.println("Acting is Selected\n");
+            Moderator moderator = new Moderator(numberOfDays);
+            Banker banker = new Banker();
+            
+            boolean success = moderator.checkAct(currentPlayer); 
+            
+            if(success){
+               
+               if(currentPlayer.getCurrentRole().isOnCard()){
+                  banker.disperseRewards(currentPlayer, success);
+                  updateStats();
+                  JOptionPane.showMessageDialog(boardlabel, "Nice going! You've succeeded.\nRewards: 2 credits");
+               }
+               else{
+                  banker.disperseRewards(currentPlayer, success);
+                  updateStats();
+                  JOptionPane.showMessageDialog(boardlabel, "Nice going! You've succeeded.\nRewards: 1 credit, 1 dollar");
+               }
+               
+               //index of token to remove
+               int tokenRemoved = currentPlayer.getCurrentRoom().getMaxShotTokens() - currentPlayer.getCurrentRoom().getShotTokens();
+               
+               JLabel shotToken = shotTokens.get(currentPlayer.getCurrentRoom().getName()).get(tokenRemoved);
+               shotToken.setVisible(false); //remove it??
+               
+               
+               if(currentPlayer.getCurrentRoom().getShotTokens() == 0){
+                  //end the scene
+                  banker.dispersePayout(currentPlayer.getCurrentRoom());
+                  for(Player playerInScene : currentPlayer.getCurrentRoom().getOccupants()){
+                     playerInScene.setCurrentRole(null);
+                     playerInScene.removePracticeTokens();
+                     try{
+                        move(playerInScene, playerInScene.getCurrentRoom().getName()); //move player labesl off the card
+                     }
+                     catch(Exception ParserConfigurationException){
+                        //display error message
+                     }
+                  }
+                  
+                  currentPlayer.getCurrentRoom().removeSceneCard();
+                  //scene is now wrapped
+                  
+                  JOptionPane.showMessageDialog(boardlabel, "That's a wrap!\nThe scene is now over.");
+                  //System.out.println("That's a wrap! The scene card is removed and players in the room are removed from their roles.");
+               }
+
+            }
+            else{
+               //System.out.println("Drat! You failed.");
+               if(!(currentPlayer.getCurrentRole().isOnCard())){
+                  //System.out.println("Rewards: 1 dollar");
+                  JOptionPane.showMessageDialog(boardlabel, "Drat! You failed.\nRewards: 1 dollar");
+               }
+               else{
+                  JOptionPane.showMessageDialog(boardlabel, "Drat! You failed.\nRewards: none");
+               }
+               banker.disperseRewards(currentPlayer, success);
+               updateStats();
+            }
             
          }
+         
          else if (e.getSource()== bRehearse){
-            //System.out.println("Rehearse is Selected\n");
-            clearButtons();
-            displayStandardActions();
+            Moderator moderator = new Moderator(numberOfDays);
+            
+            if(moderator.checkRehearse(currentPlayer)){
+               currentPlayer.addPracticeToken();
+               
+               updateStats();
+            }
+            else{
+               JOptionPane.showMessageDialog(boardlabel, "You have practiced enough! You must now act.");
+            }
          }
          else if(e.getSource() == bRank){
             String rank = JOptionPane.showInputDialog(boardlabel, "Enter in your desired rank as a number.");
-            ImageIcon rankFace = new ImageIcon("b" + rank + ".png");
-            playerlabels.get(0).setIcon(rankFace);
+            ImageIcon rankFace = new ImageIcon(currentPlayer.playerName.substring(0,1) + rank + ".png");
+            playerlabels.get(players.indexOf(currentPlayer)).setIcon(rankFace);
          }
          else if (e.getSource()== bMove){
             String dest = JOptionPane.showInputDialog(boardlabel, "Enter in your destination:");
@@ -322,24 +471,101 @@ public class Display extends JFrame{
             catch(Exception ParserConfigurationException){
                //any error catches go here
             }
-            //move player 1 for now, once developed more could be any player depending on turn
+
             Moderator moderator = new Moderator(numberOfDays);
 
             
-            if(moderator.checkMove(players.get(0).getCurrentRoom(), dest2)){
-               players.get(0).move(b.getRoom(dest2));
-               Icon playerIcon = playerlabels.get(0).getIcon();
+            if(moderator.checkMove(currentPlayer.getCurrentRoom(), dest2)){
+               currentPlayer.move(b.getRoom(dest2));
+               Icon playerIcon = playerlabels.get(players.indexOf(currentPlayer)).getIcon();
                int x = Integer.parseInt(coords[0]);
                int y = Integer.parseInt(coords[1]);
-               playerlabels.get(0).setBounds(x /*+ 5*/, y /*+ 5*/, playerIcon.getIconWidth(), playerIcon.getIconHeight());
+               playerlabels.get(players.indexOf(currentPlayer)).setBounds(x, y, playerIcon.getIconWidth(), playerIcon.getIconHeight());
+            }
+            if(!(dest2.equals("Casting Office") || dest2.equals("Trailers"))){
+               if(!(currentPlayer.getCurrentRoom().getSceneCard().isDiscovered())){
+                  currentPlayer.getCurrentRoom().getSceneCard().setDiscovered();
+                  JLabel card = cardLabels.get(currentPlayer.getCurrentRoom().getName());
+                  ImageIcon cardIcon = new ImageIcon(); //blank, filled in later
+                  
+                  try{
+                     cardIcon = new ImageIcon(xml.getCardImageName(currentPlayer.getCurrentRoom().getSceneCard().sceneName, "cards.xml"));
+                  }
+                  catch(Exception ParserConfigurationException){
+                     //error message goes here
+                  }
+                  card.setIcon(cardIcon);
+               }
+            }
+         }
+         
+         else if(e.getSource() == bRole){
+            String roleWanted = JOptionPane.showInputDialog(boardlabel, "Select a Role");
+            
+            Moderator moderator = new Moderator(numberOfDays);
+            
+            XMLParser xml = new XMLParser();
+            
+            if(moderator.checkRole(currentPlayer, roleWanted)){
+               Role role = currentPlayer.getCurrentRoom().getRole(roleWanted);
+               currentPlayer.takeRole(role);
+               
+               String[] coords = new String[]{}; //blank, to be filled in later
+               try{
+                  coords = xml.getOnCardRoleCoords(currentPlayer.getCurrentRoom().getSceneCard().sceneName, role.name, "cards.xml");
+                  
+                  String[] roomCoords = xml.getRoomCoordinates(currentPlayer.getCurrentRoom().getName(), "board.xml");
+                  
+                  int x = Integer.parseInt(coords[0]);
+                  int y = Integer.parseInt(coords[1]);
+                  int roomx = Integer.parseInt(roomCoords[0]);
+                  int roomy = Integer.parseInt(roomCoords[1]);
+                  
+                  coords[0] = "" + (x + roomx);
+                  coords[1] = "" + (y + roomy);
+               }
+               catch(Exception ParserConfigurationException){
+                  //error message
+               }
+               if(coords.length == 0){
+                  try{
+                     coords = xml.getOffCardRoleCoords(currentPlayer.getCurrentRoom().getName(), role.name, "board.xml");
+                  }
+                  catch(Exception ParserConfigurationException){
+                     //error message
+                  }
+               }
+               
+               int x = Integer.parseInt(coords[0]);
+               int y = Integer.parseInt(coords[1]);
+               Icon playerIcon = playerlabels.get(players.indexOf(currentPlayer)).getIcon();
+               playerlabels.get(players.indexOf(currentPlayer)).setBounds(x, y, playerIcon.getIconWidth(), playerIcon.getIconHeight());
             }
          }
          
          else if(e.getSource() == bEnd){
+            if(players.indexOf(currentPlayer) == (players.size() - 1)){
+               currentPlayer = players.get(0);
+            }
+            else{
+               currentPlayer = players.get(players.indexOf(currentPlayer) + 1);
+            }
+            
+            //check if the day is over, if true check if the game is over
+            
             clearButtons();
-            displayActingActions();
+            if(currentPlayer.getCurrentRole() != null){
+               displayActingActions();
+            }
+            else{
+               displayStandardActions();
+            }
+            //now display the next player's stats
+            updateStats();
+            
+            JOptionPane.showMessageDialog(boardlabel, "It is now " + currentPlayer.playerName + "'s turn.");
          }   
-             
+         
       }
       public void mousePressed(MouseEvent e) {
       }
@@ -350,8 +576,6 @@ public class Display extends JFrame{
       public void mouseExited(MouseEvent e) {
       }
    }
-
-   
 
    public int numberOfPlayers(){
       try{

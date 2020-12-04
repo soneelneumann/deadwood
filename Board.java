@@ -75,6 +75,23 @@ public class Board{
       }
       return null;
    }
+   
+   /*
+   getRoomNames()
+   returns: ArrayList<String>
+   precondition: Board's list of rooms is not null
+   Returns a list of the room names
+   */
+   public ArrayList<String> getRoomNames(){
+      ArrayList<String> output = new ArrayList<String>();
+      
+      for(Room room : rooms){
+         output.add(room.getName());
+      }
+      
+      return output;
+   }
+
 
    /*
    find(Player player)

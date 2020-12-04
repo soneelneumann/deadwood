@@ -16,9 +16,12 @@ public class SceneCard{
    
    private ArrayList<Role> roles;
    
+   private boolean isDiscovered;
+   
    /* Scene card initializer */
    public SceneCard(){
       roles = new ArrayList<Role>();  
+      isDiscovered = false;
    }
    
    /* Scene card initializer given the scene's name */
@@ -30,6 +33,14 @@ public class SceneCard{
    public SceneCard(String sceneName, int sceneBudget){
       this.sceneName = sceneName;
       this.sceneBudget = sceneBudget;
+   }
+   
+   public boolean isDiscovered(){
+      return isDiscovered;
+   }
+   
+   public void setDiscovered(){
+      isDiscovered = true;
    }
    
    /*

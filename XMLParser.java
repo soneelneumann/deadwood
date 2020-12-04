@@ -455,17 +455,19 @@ public class XMLParser{
                   NodeList parts = child.getChildNodes();
                   for(int k = 0; k < parts.getLength(); k++){
                      Node part = parts.item(k);
-                     if(part.getAttributes().getNamedItem("name").equals(rolename)){
-                        NodeList partChildren = part.getChildNodes();
-                        for(int m = 0; m < partChildren.getLength(); m++){
-                           Node partChild = partChildren.item(m);
-                           if(partChild.getNodeName().equals("area")){
-                              String x = partChild.getAttributes().getNamedItem("x").getNodeValue();
-                              String y = partChild.getAttributes().getNamedItem("y").getNodeValue();
-                              String h = partChild.getAttributes().getNamedItem("h").getNodeValue();
-                              String w = partChild.getAttributes().getNamedItem("w").getNodeValue();
-                              
-                              return new String[]{x, y, h, w}; //return coords as a new String[]
+                     if(part.getNodeType() == Node.ELEMENT_NODE){
+                        if(part.getAttributes().getNamedItem("name").getNodeValue().equals(rolename)){
+                           NodeList partChildren = part.getChildNodes();
+                           for(int m = 0; m < partChildren.getLength(); m++){
+                              Node partChild = partChildren.item(m);
+                              if(partChild.getNodeName().equals("area")){
+                                 String x = partChild.getAttributes().getNamedItem("x").getNodeValue();
+                                 String y = partChild.getAttributes().getNamedItem("y").getNodeValue();
+                                 String h = partChild.getAttributes().getNamedItem("h").getNodeValue();
+                                 String w = partChild.getAttributes().getNamedItem("w").getNodeValue();
+                                 
+                                 return new String[]{x, y, h, w}; //return coords as a new String[]
+                              }
                            }
                         }
                      }
@@ -479,7 +481,7 @@ public class XMLParser{
    
    //returns coords for a role on the scene card
    //precond: rolename is a role on card "cardname"
-   public String[] getOnCardRoleCoords(String rolename, String cardname, String filename)throws ParserConfigurationException{
+   public String[] getOnCardRoleCoords(String cardname, String rolename, String filename)throws ParserConfigurationException{
       Document doc = getDocFromFile(filename);
       Element root = doc.getDocumentElement();
       
@@ -490,19 +492,79 @@ public class XMLParser{
             NodeList cardChildren = card.getChildNodes();
             for(int j = 0; j < cardChildren.getLength(); j++){
                Node cardChild = cardChildren.item(j); 
-               if(cardChild.getNodeName().equals("part") && 
-                     cardChild.getAttributes().getNamedItem("name").getNodeValue().equals(rolename)){
-                  
-                  NodeList partChildren = cardChild.getChildNodes();
-                  for(int k = 0; k < partChildren.getLength(); k++){
-                     Node partChild = partChildren.item(k);
-                     if(partChild.getAttributes().getNamedItem("name").getNodeValue().equals("area")){
-                        String x = partChild.getAttributes().getNamedItem("x").getNodeValue();
-                        String y = partChild.getAttributes().getNamedItem("y").getNodeValue();
-                        String h = partChild.getAttributes().getNamedItem("h").getNodeValue();
-                        String w = partChild.getAttributes().getNamedItem("w").getNodeValue();
-                        
-                        return new String[]{x, y, h, w}; //return coords as a new String[]
+               if(cardChild.getNodeType() == Node.ELEMENT_NODE){
+                  if(cardChild.getNodeName().equals("part") && 
+                        cardChild.getAttributes().getNamedItem("name").getNodeValue().equals(rolename)){
+                     
+                     NodeList partChildren = cardChild.getChildNodes();
+                     for(int k = 0; k < partChildren.getLength(); k++){
+                        Node partChild = partChildren.item(k);
+                        if(partChild.getNodeName().equals("area")){
+                           String x = partChild.getAttributes().getNamedItem("x").getNodeValue();
+                           String y = partChild.getAttributes().getNamedItem("y").getNodeValue();
+                           String h = partChild.getAttributes().getNamedItem("h").getNodeValue();
+                           String w = partChild.getAttributes().getNamedItem("w").getNodeValue();
+                           
+                           return new String[]{x, y, h, w}; //return coords as a new String[]
+                        }
+                     }
+                  }
+               }
+            }
+         }
+      }
+      return new String[]{};
+   }
+   
+   //returns corresponding image name to input card
+   public String getCardImageName(String cardname, String filename)throws ParserConfigurationException{
+      Document doc = getDocFromFile(filename);
+      Element root = doc.getDocumentElement();
+      
+      NodeList cards = root.getElementsByTagName("card");
+      for(int i = 0; i < cards.getLength(); i++){
+         Node card = cards.item(i);
+         if(card.getAttributes().getNamedItem("name").getNodeValue().equals(cardname)){
+            return card.getAttributes().getNamedItem("img").getNodeValue();
+         }
+      }
+      return "";
+   }
+   
+   //returns shot token coordinates for the scene, in order from take 1 to the last take
+   public String[] getShotTokenCoords(String takeNumber, String roomname, String filename)throws ParserConfigurationException{
+      Document doc = getDocFromFile(filename);
+      Element root = doc.getDocumentElement();
+      
+      NodeList sets = root.getElementsByTagName("set");
+      
+      for(int i = 0; i < sets.getLength(); i++){
+         Node set = sets.item(i);
+         if(set.getNodeType() == Node.ELEMENT_NODE){
+            if(set.getAttributes().getNamedItem("name").getNodeValue().equals(roomname)){
+               NodeList children = set.getChildNodes();
+               for(int j = 0; j < children.getLength(); j++){
+                  Node child = children.item(j);
+                  if(child.getNodeName().equals("takes")){
+                     NodeList takes = child.getChildNodes();
+                     for(int k = 0; k < takes.getLength(); k++){
+                        Node take = takes.item(k);
+                        if(take.getNodeType() == Node.ELEMENT_NODE){
+                           if(take.getAttributes().getNamedItem("number").getNodeValue().equals(takeNumber)){
+                              NodeList takeChildren = take.getChildNodes();
+                              for(int m = 0; m < takeChildren.getLength(); m++){
+                                 Node area = takeChildren.item(m);
+                                 if(area.getNodeType() == Node.ELEMENT_NODE){
+                                    String x = area.getAttributes().getNamedItem("x").getNodeValue();
+                                    String y = area.getAttributes().getNamedItem("y").getNodeValue();
+                                    String h = area.getAttributes().getNamedItem("h").getNodeValue();
+                                    String w = area.getAttributes().getNamedItem("w").getNodeValue();
+                                    
+                                    return new String[]{x, y, h, w};
+                                 }
+                              }
+                           }
+                        }
                      }
                   }
                }

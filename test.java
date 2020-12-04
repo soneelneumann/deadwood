@@ -30,7 +30,7 @@ public class test{
       b.setRoomList(roomList); //fill in roomlist for board
       b.resetBoard(); //initializes scene cards and shot tokens
 
-      Display d = new Display(new ArrayList<Room>(), b);
+      Display d = new Display(b);
       d.setVisible(true);
    }
 }
