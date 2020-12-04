@@ -9,8 +9,28 @@ import java.util.ArrayList;
 import javax.xml.parsers.ParserConfigurationException;
 
 public class test{
-   public static void main(String[] args){
-      Display d = new Display(new ArrayList<Room>());
+   public static void main(String[] args) throws ParserConfigurationException{
+      XMLParser xml = new XMLParser();
+      ArrayList<SceneCard> cardPile = xml.getCards("cards.xml");
+      
+      Board b = new Board(cardPile);
+      
+      ArrayList<Room> roomList = xml.getRooms("board.xml");
+      
+      //set up the board
+      for(Room r : roomList){
+         if(r.getName().equals("trailer")){
+            r.setName("Trailers");
+            b.setTrailers(r);
+         }
+         else if(r.getName().equals("office")){
+            r.setName("Casting Office");
+         }
+      }
+      b.setRoomList(roomList); //fill in roomlist for board
+      b.resetBoard(); //initializes scene cards and shot tokens
+
+      Display d = new Display(new ArrayList<Room>(), b);
       d.setVisible(true);
    }
 }
