@@ -377,8 +377,12 @@ public class XMLParser{
    
    
    /*
-   getRoomCoordinates
-   returns string array with coordinates as elements
+   getRoomCoordinates(String, String)
+   returns: String[], contains coordinates for the room
+   parameters:
+      String roomname: name of the room you are locating
+      String filename: name of the file to search through
+   returns the coordinates on the board for a given room
    */
    public String[] getRoomCoordinates(String roomname, String filename) throws ParserConfigurationException{
       Document doc = getDocFromFile(filename);
@@ -438,8 +442,14 @@ public class XMLParser{
       return new String[]{};
    }
    
-   //returns coords for a role off the scene card
-   //precond: rolename is name of role contained within the room named "roomname"
+   /*
+   getOffCardRoleCoords(String, String, String)
+   returns: String[], coordinates for the role's coordinates on the board
+   parameters:
+      String roomname: name of the room the role is in
+      String rolename: name of the role to locate
+   returns the coordinates of a given role in a given room
+   */
    public String[] getOffCardRoleCoords(String roomname, String rolename, String filename) throws ParserConfigurationException{
       Document doc = getDocFromFile(filename);
       Element root = doc.getDocumentElement();
@@ -479,8 +489,15 @@ public class XMLParser{
       return new String[]{};
    }
    
-   //returns coords for a role on the scene card
-   //precond: rolename is a role on card "cardname"
+   /*
+   getOnCardRoleCoords(String, String, String)
+   returns: String[], coordinates of the role
+   parameters: 
+      String cardname: name of the card the role is located on
+      String rolename: name of the role to locate
+      String filename: name of the file to search through
+   returns the coordinates of a role with respect to the card it is on
+   */
    public String[] getOnCardRoleCoords(String cardname, String rolename, String filename)throws ParserConfigurationException{
       Document doc = getDocFromFile(filename);
       Element root = doc.getDocumentElement();
@@ -516,7 +533,14 @@ public class XMLParser{
       return new String[]{};
    }
    
-   //returns corresponding image name to input card
+   /*
+   getCardImageName(String, String)
+   returns: String, name of the image file for the card
+   parameters:
+      String cardname: name of the card to get the image name for
+      String filename: name of the file to search through
+   returns the name of the corresponding image for a given scene card
+   */
    public String getCardImageName(String cardname, String filename)throws ParserConfigurationException{
       Document doc = getDocFromFile(filename);
       Element root = doc.getDocumentElement();
@@ -531,7 +555,14 @@ public class XMLParser{
       return "";
    }
    
-   //returns shot token coordinates for the scene, in order from take 1 to the last take
+   /*
+   getShotTokenCoords(String, String, String)
+   returns: String[], coordinates for the given shot token
+   parameters:
+      String takeNumber: which take from the scene to get coordinates for
+      String roomname: name of the room the shot token belongs to
+      String filename: name of the file to search through
+   */
    public String[] getShotTokenCoords(String takeNumber, String roomname, String filename)throws ParserConfigurationException{
       Document doc = getDocFromFile(filename);
       Element root = doc.getDocumentElement();

@@ -129,6 +129,9 @@ public class Moderator{
       if(player.getCurrentRoom().getRole(s) == null){
          return false;
       }
+      if(player.getCurrentRoom().getSceneCard() == null){
+         return false;
+      }
       if(player.getRank() < player.getCurrentRoom().getRole(s).getRank()){
          return false;
       }
